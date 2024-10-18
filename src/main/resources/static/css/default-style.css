@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans CJK KR Regular", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+ul, li {
+  list-style: none;
+}
+
+#content {
+  width: auto;
+  min-height : 100vh;
+  background-color: #f3f4f6;
+}
+
+#content_wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  height: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+}

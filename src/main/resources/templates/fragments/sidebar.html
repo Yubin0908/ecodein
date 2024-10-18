@@ -1,0 +1,144 @@
+<th:block th:fragment="sidebarFragment">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--  Tailwind CSS Init  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.1/tailwind.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Default CSS Init -->
+    <link rel="stylesheet" href="/css/default-style.css">
+    <!--  Header CSS Init  -->
+    <link rel="stylesheet" href="/css/header.css">
+    <!-- jQuery Init-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <!-- Header Toggle Functions Init -->
+    <script src="/js/header-visible-toggle.js"></script>
+  </head>
+  <body>
+    <th:block th:if="${session.user == null && session.admin == null}">
+      <script>
+        alert('인가된 권한이 없습니다. 로그인 후 다시 시도해주세요.');
+        location.href = '/';
+      </script>
+    </th:block>
+    <div id="header-top">
+      <div id="header" class="visible">
+        <div class="header">
+          <div class="hide-arrow" onclick="sidebar_not_visible()">
+            <img src="/img/icon/left-arrow.png" alt="Toggle Sidebar">
+          </div>
+        </div>
+        <div class="middle">
+          <a href="/main" data-page="main" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-home-v2.png" alt="">
+              <span class="text">HOME</span>
+            </div>
+          </a>
+          <a href="/buyer/default/1?keyword=" data-page="buyer" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-buyer-v2.png" alt="">
+              <span class="text">거래처 관리</span>
+            </div>
+          </a>
+          <a href="/stock" data-page="stock item" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-item-v2.png" alt="">
+              <span class="text">재고 관리</span>
+            </div>
+          </a>
+          <a href="/order/1/all" data-page="order" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-order-v2.png" alt="">
+              <span class="text">발주 관리</span>
+            </div>
+          </a>
+          <a href="/storage/1" data-page="storage" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icons-warehouse-v2.png" alt="">
+              <span class="text">창고관리</span>
+            </div>
+          </a>
+          <a href="/approval/1" data-page="approval" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-approval-v2.png" alt="">
+              <span class="text">전자결재</span>
+            </div>
+          </a>
+          <a
+              th:href="@{/return/1/{buyerCode}/all(buyerCode = ${session.user != null} ? ${session.user.buyerCode.buyerCode} : 0)}" data-page="return"
+             class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icon-return.png" alt="">
+              <span class="text">반품관리</span>
+            </div>
+          </a>
+          <a href="/board/board" data-page="board" class="menu-a">
+            <div class="menu">
+              <img src="/img/icon/icons-qna-v2.png" alt="">
+              <span class="text">Q&A</span>
+            </div>
+          </a>
+        </div>
+        <div class="hidden detail-menu">
+          <p onclick="user_management_modal_active ()" th:if="${session.user != null}">
+            <img class="img-password" src="/img/icon/icon-password.png" alt="">
+            <a>
+              비밀번호변경
+            </a>
+          </p>
+          <p onclick="admin_management_modal_active ()" th:if="${session.admin != null}">
+            <img class="img-admin" src="/img/icon/icon-admin-manager.png" alt="">
+            <a>
+              관리자 메뉴
+            </a>
+          </p>
+        </div>
+        <div class="footer">
+          <img src="/img/icon/icon-user-v2.png" alt="" onclick="user_info_toggle()"
+               style="cursor: pointer;">
+          <div class="user-info" th:if="${session.admin != null || session.user != null}">
+          <span th:text="${session.user != null ? session.user.buyerCode.buyerName : '관리자' }">거래처 & 관리자
+            표시</span>
+            <span
+                th:text="${session.user != null ? session.user.userName : session.admin.adminName}">접속자 이름
+            표시</span>
+          </div>
+          <a href="/logout">
+            <img src="/img/icon/icon-logout.png" alt="logout-btn">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hidden sub-background"
+        style="width: calc(100vw - 326px); height: 1000px; background-color: lightgray; opacity: .7; position: absolute;
+              z-index: 1; top: 0; right: 0;"></div>
+    <!-- Main modal -->
+    <div id="manager-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+         class=" fixed justify-center items-center"
+         style="top: 25%; left: 40%; z-index: 1;
+         box-shadow: rgba(0, 0, 0, 0.5) 0 14px 28px, rgba(0, 0, 0, 0.5) 0 10px 10px; width: 30%">
+    </div>
+    
+    <script src="/js/url-pathname-return.js"></script>
+    <script>
+      function admin_management_modal_active () {
+        $('#manager-modal').load('/admin-management');
+        $('#manager-modal').removeClass('hidden');
+        $('.sub-background').removeClass('hidden');
+      }
+      
+      function user_management_modal_active () {
+        $('#manager-modal').load('/user-management');
+        $('#manager-modal').removeClass('hidden');
+        $('.sub-background').removeClass('hidden');
+        
+      }
+      
+      function admin_management_modal_deactive () {
+        $('#manager-modal').addClass('hidden');
+        $('.sub-background').addClass('hidden');
+      }
+    </script>
+  </body>
+</th:block>

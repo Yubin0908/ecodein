@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="ko">
+<link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css"  rel="stylesheet" />
+<head>
+<meta charset="UTF-8">
+<title>등록 페이지</title>
+<script
+	src="https://cdn.tiny.cloud/1/nd8grynjd8268gdl5ya7l9blew0p9nql98thf7fre8azeeg6/tinymce/6/tinymce.min.js"></script>
+	
+<style type="text/css">
+#content {
+	width: calc(100vw - 327px);
+	height: 100%;
+	background-color: #e5e7eb;
+	float: right;
+}
+
+#content_wrap {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 20px;
+	width: 101%;
+	height: 100%;
+	padding: 50px;
+	box-sizing: border-box;
+}
+
+.board-list {
+	margin: 0 auto;
+	width: 1200px;
+}
+
+.form-board-content {
+	width: 100%;
+	height: 200px;
+}
+</style>	
+</head>
+<body>
+	<div class="h-full" >
+    <div id="header-controller" style="width: 310px; float: left;">
+      <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+    </div>
+			<div id="content">
+				<div id="content_wrap">
+					<div class="board-list">
+						<div class="board-list-content">
+							<div>
+								<h3>게시판 등록</h3>
+							</div>
+
+							<div class="board-form">
+								<form method="post" action="/board/add"
+									id="board_form">
+
+									<div class="user" style="display: none">
+										<input type="text" id="user_id" name="user"
+											th:value="${ session.user.userId }">
+									</div>
+									<div class="row my-2">
+										<div class="mb-3">
+											<label for="boardTitle">제목</label> <input type="text"
+												id="boardTitle"
+												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+												name="boardTitle" placeholder="제목을 입력해 주세요" required />
+										</div>
+									</div>
+
+									<div class="row my-2">
+										<div class="col-2 fw-bolder">
+											<label for="boardContent">내용</label>
+										</div>
+										<div class="col">
+											<textarea cols="79" rows="10" id="boardContent"
+												name="boardContent" value="${boardContent}"></textarea>
+										</div>
+									</div>
+
+									<!-- 버튼 -->
+									<div class="row mt-5">
+										<div class="col">
+											<button type="button"
+												class="text-black bg-gradient-to-r from-green-200 via-green-400 to-green-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+												onclick="location.href='/board/board'" style="font-weight: bold">뒤로
+												가기</button>
+										</div>
+										<div class="col">
+											<button type="submit"
+												class="text-black bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+												style="font-weight: bold">등록</button>
+										</div>
+									</div>
+								</form>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	
+
+</body>
+<script>
+	tinymce
+			.init({
+				selector : 'textarea',
+				plugins : 'autolink code link autoresize paste contextmenu image preview',
+				toolbar : 'undo redo | fintsizeselect | forecolor | bold italic strikethrough underline | alignleft aligncenter alignright alignjustify | tinycomments | bullist numlist outdent indent | link custom_image | code preview',
+				fintsize_formats : '8px 10px 12px 14px 16px 18px 20px 22px 24px 26px 28px 30px 36px 40px 48px',
+				tinycomments_mode : 'embedded',
+				tinycomments_author : 'Author name',
+				fullpage_default_font_size : "16px",
+				paste_as_text : true,
+				paste_data_images : true,
+				branding : false,
+				language : "ko_KR",
+				menubar : false,
+				min_height : 600,
+				max_height : 600,
+				content_style : 'body { text-align: center; }',
+
+			});
+</script>
+<script>
+document.getElementById('board_form').addEventListener('submit',
+		function(e) {
+			const content = tinymce.get('boardContent').getContent();
+			if (content === '') {
+				e.preventDefault();
+			}
+		});
+</script>
+</html>

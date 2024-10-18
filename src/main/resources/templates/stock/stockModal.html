@@ -1,0 +1,77 @@
+
+<div th:fragment="itemModalContent">
+	<form id="itemSearchForm" method="get" onsubmit="itemSubmit(event)">
+		<input type="text" id="itemModalSearch" class="modalInput" name="itemModalSearch" th:value="${itemModalSearch}">
+		<button type="button" class="modalButton" onclick="itemSubmit(event)">검색</button>
+		<table>
+			<tr>
+				<th>상품 번호</th>
+				<th>상품명</th>
+			</tr>
+			<tr th:each="item : ${items}">
+				<td th:text="${item.itemNo}"></td>
+				<td th:data-value="${item.itemNo}" th:text="${item.itemName}" onclick="chooseItem(this)" class="tableHover"></td>
+			</tr>
+		</table>
+	</form>
+	<div class="pagination">
+		<button th:data-value="${paging.startPage}" onclick="changeItemPage(this)"><<</button>
+		<button th:data-value="${paging.CurrentPage - 1}" th:disabled="${items.first}" onclick="changeItemPage(this)">이전</button>
+		<span th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+			<button th:data-value="${page}" th:text="${page}" th:disabled="${paging.currentPage eq page}"  th:classappend="${paging.currentPage eq page} ? 'bold disabled' : ''" onclick="changeItemPage(this)"></button>
+		</span>
+		<button th:data-value="${paging.CurrentPage + 1}" th:disabled="${items.Last}" onclick="changeItemPage(this)">다음</button>
+		<button th:data-value="${paging.endPage}" onclick="changeItemPage(this)">>></button>
+	</div>
+</div>
+<div th:fragment="stockModalContent">
+	<form id="stockSearchForm" method="get" onsubmit="stockSubmit(event)">
+		<input type="text" id="stockModalSearch" class="modalInput" name="stockModalSearch" th:value="${stockModalSearch}">
+		<button type="button" class="modalButton" onclick="stockSubmit(event)">검색</button>
+		<table>
+			<tr>
+				<th>상품 번호</th>
+				<th>상품명</th>
+			</tr>
+			<tr th:each="item : ${items}">
+				<td th:text="${item.itemNo}"></td>
+				<td th:data-value="${item.itemNo}" th:text="${item.itemName}" onclick="chooseStock(this)" class="tableHover"></td>
+			</tr>
+		</table>
+	</form>
+	<div class="pagination">
+		<button th:data-value="${paging.startPage}" onclick="changeStockPage(this)"><<</button>
+		<button th:data-value="${paging.CurrentPage - 1}" th:disabled="${items.first}" onclick="changeStockPage(this)">이전</button>
+		<span th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+			<button th:data-value="${page}" th:text="${page}" th:disabled="${paging.currentPage eq page}"  
+			th:classappend="${paging.currentPage eq page} ? 'bold disabled' : ''" onclick="changeStockPage(this)"></button>
+		</span>
+		<button th:data-value="${paging.CurrentPage + 1}" th:disabled="${items.Last}" onclick="changeStockPage(this)">다음</button>
+		<button th:data-value="${paging.endPage}" onclick="changeStockPage(this)">>></button>
+	</div>
+</div>
+<div th:fragment="storageModalContent">
+	<form id="storageSearchForm" method="get" onsubmit="storageSubmit(event)">
+		<input type="text" id="storageModalSearch" class="modalInput" name="storageModalSearch" th:value="${storageModalSearch}">
+		<button type="button" class="modalButton" onclick="storageSubmit(event)">검색</button>
+		<table>
+			<tr>
+				<th>창고 번호</th>
+				<th>창고명</th>
+			</tr>
+			<tr th:each="storage : ${storages}">
+				<td th:text="${storage.storageNo}"></td>
+				<td th:data-value="${storage.storageNo}" th:text="${storage.storageName}" onclick="chooseStorage(this)" class="tableHover"></td>
+			</tr>
+		</table>
+	</form>
+	<div class="pagination">
+		<button th:data-value="${paging.startPage}" onclick="changeStoragePage(this)"><<</button>
+		<button th:data-value="${paging.CurrentPage - 1}" th:disabled="${storages.first}" onclick="changeStoragePage(this)">이전</button>
+		<span th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+			<button th:data-value="${page}" th:text="${page}" th:disabled="${paging.currentPage eq page}" th:classappend="${paging.currentPage eq page} ? 'bold disabled' : ''" onclick="changeStoragePage(this)"></button>
+		</span>
+		<button th:data-value="${paging.CurrentPage + 1}" th:disabled="${storages.Last}" onclick="changeStoragePage(this)">다음</button>
+		<button th:data-value="${paging.endPage}" onclick="changeStoragePage(this)">>></button>
+	</div>
+</div>

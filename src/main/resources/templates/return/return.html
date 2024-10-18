@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Eco de_IN] 반품 관리</title>
+  <link rel="stylesheet" href="/css/default-style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <style>
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding-left: 0;
+      list-style: none;
+      margin-top: 50px;
+      margin-bottom: 20px;
+    }
+    
+    .page-link {
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      margin: 0 5px;
+      text-decoration: none;
+      color: #000;
+      border-radius: 5px;
+    }
+    
+    .page-link:hover {
+      background-color: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      cursor: pointer;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background-color: lightblue;
+    }
+    
+    ::-webkit-scrollbar-track-piece {
+      background-color: #eee;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background-color: #ccc;
+    }
+    
+    ::-webkit-scrollbar-button {
+      background-color: #eee;
+      width: 5px;
+      height: 5px;
+    }
+    
+    #bubble-menu {
+      margin: 30px auto 0 auto;
+      width: 80%;
+      height: 200px;
+      display: flex;
+      gap: 50px;
+    }
+    
+    .bubble-large {
+      background-color: #fff;
+      height: 195px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 25px;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
+    
+    .title_bubble {
+      padding: 5px 10px;
+      background: #D9D9D9;
+      border-radius: 24px;
+      font-size: 14px;
+      display: block;
+      width: 127px;
+      height: 30px;
+      margin: 10px auto;
+      text-align: center;
+      line-height: 20px;
+    }
+    
+    .count-text-lg {
+      font-size: 70px;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .attemp-text-lg {
+      font-size: 45px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: -75px;
+      margin-right: 50px;
+    }
+    
+    .sub-bubble {
+      width: 300px;
+    }
+    
+    .bubble-small {
+      display: flex;
+      width: 100%;
+      height: 55px;
+      background: #fff;
+      border-radius: 24px;
+      margin-bottom: 15px;
+    }
+    
+    .regist-bubble {
+      display: inline-block;
+      background-color: #D9D9D9;
+      border-radius: 15px;
+      width: 91px;
+      height: 26px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 15px;
+    }
+    
+    .count-bubble-sm {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 5px;
+      margin-left: 70px;
+    }
+    
+    .attemp-text-sm {
+      font-size: 15px;
+      font-weight: bold;
+      margin: auto 0 auto 60px;
+    }
+    
+    .process-bubble {
+      display: inline-block;
+      background-color: #F6E3CE;
+      border-radius: 15px;
+      width: 91px;
+      height: 26px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 15px;
+    }
+    
+    .complete-bubble {
+      display: inline-block;
+      background-color: #BCF5A9;
+      border-radius: 15px;
+      width: 91px;
+      height: 26px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 15px;
+    }
+    
+    #button-group {
+      width: 100%;
+      text-align: right;
+    }
+    
+    .btn-return-regist {
+      background-color: #81CD28 !important;
+      width: 110px;
+      height: 35px;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      float: right;
+    }
+    
+    #table-bg {
+      width: 100%;
+      background: #fff;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      border-radius: 10px;
+      min-height: 600px;
+      height: auto;
+    }
+  </style>
+  
+  <style>
+    #medium-modal, #manager-modal {
+      position: fixed;
+      top: 35%;
+      left: 35%;
+    }
+  </style>
+  <script th:inline="javascript">
+    function setupModalEventHandlers() {
+      $('#dropdown-year').on('click', function () {
+        $('#yearDropdown').toggleClass('hidden');
+      });
+      
+      $('#dropdown-month').on('click', function () {
+        $('#monthDropdown').toggleClass('hidden');
+      });
+      
+      $('#dropdown-day').on('click', function () {
+        $('#dayDropdown').toggleClass('hidden');
+      });
+      
+      $('.modal-search-bubble-2').on('click', function () {
+        $('.manager-modal').toggleClass('hidden');
+      });
+      
+      $('.modal-search-bubble-1').on('click', function () {
+        $('#medium-modal').toggleClass('hidden');
+      });
+      
+      $('.medium-modal-close').on('click', function () {
+        $('#medium-modal').toggleClass('hidden');
+      });
+      
+      $('.manager-modal-close').on('click', function () {
+        $('.manager-modal').toggleClass('hidden');
+      });
+      
+      $('.manager-modal-closer').on('click', function () {
+        $('.manager-modal').toggleClass('hidden');
+      });
+      
+      $('.manager-btn-close').on('click', function () {
+        $('.manager-modal').toggleClass('hidden');
+      });
+      
+      $('.btn-close').on('click', function () {
+        $('.modal').toggleClass('hidden');
+        location.reload();
+      });
+      
+      function modal_year_update() {
+        const now = new Date();
+        const year_dropdown = document.querySelector('#yearDropdown ul');
+        
+        let year = now.getFullYear();
+        for (let idx = 0; idx < 4; idx++) {
+          year_dropdown.innerHTML += `
+                                   <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 text-center" aria-labelledby="dropdown-year">
+                                      <li>
+                                        <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white pointer-event" onclick="year_selector (this)">
+                                          ${year++}
+                                        </span>
+                                      </li>
+                                    </ul>
+                                   `
+        }
+        
+        modal_month_update(now.getMonth());
+      }
+      
+      function modal_month_update() {
+        let defualtmonth = new Date().getMonth() + 1;
+        let month = defualtmonth;
+        const month_dropdown = document.querySelector('#monthDropdown ul');
+        
+        for (let idx = month; idx <= 12; idx++) {
+          month_dropdown.innerHTML += `
+                                  <li>
+                                  <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-center" onclick="month_selector(this)">
+                                    ${month++}
+                                  </span>
+                                  </li>
+                                 `;
+        }
+        
+        modal_day_update(defualtmonth);
+      }
+      
+      function  modal_day_update(month) {
+        console.log('month : ', month)
+        const now = new Date();
+        const day = new Date(now.getFullYear(), month, 0).getDate();
+        const day_dropdown = document.querySelector('#dayDropdown ul');
+        
+        for (let idx = now.getDate(); idx <= day; idx++) {
+          day_dropdown.innerHTML += `
+                                  <li>
+                                    <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="day_selector (this)">
+                                      ${idx}
+                                    </a>
+                                  </li>
+                                `;
+        }
+      }
+      
+      modal_year_update();
+      
+      function year_selector(e) {
+        const value = e.textContent;
+        const button = document.querySelector('#dropdown-year');
+        const year_dropDown = document.querySelector('#yearDropdown');
+        
+        year_dropDown.classList.add('hidden');
+        
+        button.innerHTML = `
+        ${value}
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+      }
+      
+      function month_selector(e) {
+        const value = e.textContent;
+        const button = document.querySelector('#dropdown-month');
+        const month_dropdown = document.querySelector('#monthDropdown');
+        
+        month_dropdown.classList.add('hidden');
+        
+        button.innerHTML = `
+         ${value} &nbsp;&nbsp;&nbsp;
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+      }
+      
+      function day_selector(e) {
+        const value = e.textContent;
+        const button = document.querySelector('#dropdown-day');
+        const day_dropdown = document.querySelector('#dayDropdown');
+        
+        day_dropdown.classList.add('hidden');
+        
+        button.innerHTML = `
+         ${value} &nbsp;&nbsp;&nbsp;
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+      }
+      
+      function sub_modal_event (e) {
+        const value = e.textContent;
+        const order_input = document.querySelector('.order-input');
+        
+        order_input.value = value.trim();
+        
+        document.querySelector('#medium-modal').classList.add('hidden');
+      }
+      
+      function manager_modal_event (e) {
+        const value = e.textContent;
+        const manager_input = document.querySelector('.manager-input');
+        
+        document.querySelector('#manager-modal').classList.add('hidden');
+        
+        manager_input.value = value.trim();
+      }
+      
+      function modal_close() {
+        document.querySelector('.modal').classList.add('hidden');
+      }
+    }
+    
+    function modal_extend_regist(type) {
+      $('#modal-pos').load('/return/modal/' + type, function () {
+        $('.modal').removeClass('hidden');
+        setupModalEventHandlers();
+      });
+    }
+    
+    function modal_extend(type, returnId) {
+      let safeType = encodeURIComponent(type);
+      let payload = { returnId: returnId };
+      
+      fetch(`/return/modal/${safeType}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+          .then(response => {
+            return response.text();
+          })
+          .then(html => {
+            document.getElementById('modal-pos').innerHTML = html;
+            
+            $('.modal').removeClass('hidden');
+            setupModalEventHandlers();
+          })
+          .catch(error => {
+            console.error('Error fetching modal content:', error);
+          });
+    }
+  </script>
+ 
+</head>
+
+<body>
+<!-- 사이드바 -->
+<div id="header-controller" style="width: 310px; float: left;">
+  <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+</div>
+<!-- 메인 콘텐츠 -->
+<div id="content">
+  <div id="content_wrap">
+    <!-- modal이 출력될 부분 -->
+    <div id="modal-pos"></div>
+    <!-- breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/main">
+        <img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <a href="/return">
+        <span style="color: #ababab; font-weight: bold;">반품 관리</span>
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <span style="font-weight: bold;">반품현황</span>
+    </div>
+    <!-- 상단 메뉴 -->
+    <div id="bubble-menu">
+      <div class="bubble-large">
+        <a
+            th:href="@{/return/{page}/{buyerCode}/previous(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}"
+           class="title_bubble">
+          지난달 반품 내역
+        </a>
+        <div class="count-text-lg" th:text="${previousMonth}">
+          75
+        </div>
+        <div class="attemp-text-lg">
+          건
+        </div>
+      </div>
+      <div class="bubble-large">
+        <a
+            th:href="@{/return/{page}/{buyerCode}/current(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}"
+            class="title_bubble">
+          이번달 반품 내역
+        </a>
+        <div class="count-text-lg" th:text="${currentMonth}">
+          -
+        </div>
+        <div class="attemp-text-lg">
+          건
+        </div>
+      </div>
+      <div class="sub-bubble">
+        <div class="bubble-small">
+          <a
+              th:href="@{/return/{page}/{buyerCode}/accepted(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}"
+             class="regist-bubble">
+            접 수
+          </a>
+          <div class="count-bubble-sm" th:text="${accepted}">
+            1
+          </div>
+          <div class="attemp-text-sm">
+            건
+          </div>
+        </div>
+        <div class="bubble-small">
+          <a
+              th:href="@{/return/{page}/{buyerCode}/rejected(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}"
+             class="process-bubble">
+            진행중
+          </a>
+          <div class="count-bubble-sm" th:text="${rejected}">
+            1
+          </div>
+          <div class="attemp-text-sm">
+            건
+          </div>
+        </div>
+        <div class="bubble-small">
+          <a
+              th:href="@{/return/{page}/{buyerCode}/completed(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}"
+             class="complete-bubble">
+            완 료
+          </a>
+          <div class="count-bubble-sm" th:text="${completed}">
+            -
+          </div>
+          <div class="attemp-text-sm">
+              건
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 버튼 그룹 -->
+      <div id="button-group">
+        <button type="button" class="btn-return-regist" onclick="modal_extend_regist('regist')"
+                th:if="${session.user != null}">반품
+          접수</button>
+        <a class="button btn-return-regist float-start" style="text-align: center; line-height: 33px;"
+                th:href="@{/return/{page}/{buyerCode}/all(page = ${page}, buyerCode = ${session.user == null ? 0 : session.user.buyerCode.buyerCode})}">전체
+          보기</a>
+      </div>
+      <!-- 테이블 -->
+      <div id="table-bg">
+        <div class="relative overflow-x-auto">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 text-center">
+            <colgroup>
+              <col style="width: 10%">
+              <col style="width: 30%;">
+              <col>
+              <col style="width: 15%;">
+            </colgroup>
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" class="px-6 py-3 rounded-s-lg">
+                  반품상태
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  반품관리번호
+                </th>
+                <th scope="col" class="px-6 py-3 rounded-e-lg">
+                  반품사유
+                </th>
+                <th scope="col" class="px-6 py-3 rounded-e-lg">
+                  반품접수일자
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white dark:bg-gray-800" th:each="return: ${returns}">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    th:text="${return.returnStatus == 0 ? '반품 접수' : return.returnStatus == 1 ? '반품 진행중':'반품완료'}">
+                </th>
+                <td class="px-6 py-4 font-bold">
+                  <a th:onclick="modal_extend('detail', [[${return.returnId}]])" th:text="${return.returnId}">CU
+                    서대문점-2024-08/11-00</a>
+                </td>
+                <td class="px-6 py-4" th:text="${return.returnReason}">
+                  상품 변질
+                </td>
+                <td class="px-6 py-4" th:text="${return.returnRegistDate}">
+                  2024-10-08
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+            <tr class="font-semibold text-gray-900 dark:text-white">
+              <td colspan="4">
+                <!-- 페이지네이션  -->
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination">
+                    <li th:classappend="${!returns.hasPrevious} ? 'hidden'">
+                      <a class="page-link"
+                         th:href="@{/return/{page}/{buyerCode}/{type}(page = ${page -1}, buyerCode = ${session.user != null ? session.user.buyerCode.buyerCode : 0}, type = ${type})}">
+                        &lt;</a>
+                    </li>
+                    <li th:each="page: ${#numbers.sequence(1, returns.totalPages)}"
+                        th:if="${page >= returns.number-5 and page <= returns.number+5}"
+                        th:classappend="${page - 1 == returns.number} ? 'active'">
+                      <a th:text="${page}" class="page-link"
+                         th:href="@{/return/{page}/{buyerCode}/{type}(page = ${page}, buyerCode = ${session.user != null ? session.user.buyerCode.buyerCode : 0}, type = ${type})}">
+                      </a>
+                    </li>
+                    <li th:classappend="${!returns.hasNext()} ? 'hidden'">
+                      <a class="page-link"
+                         th:href="@{/return/{page}/{buyerCode}/{type}(page = ${page + 1}, buyerCode = ${session.user != null ? session.user.buyerCode.buyerCode : 0}, type = ${type})}">&gt;</a>
+                    </li>
+                  </ul>
+                </nav>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      
+      
+	    </div>
+	  </div>
+</body>
+
+
+</html>

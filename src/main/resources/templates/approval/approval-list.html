@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Eco de_In] 전자결재</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.1/tailwind.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        height: '100%',
+        initialView: 'dayGridMonth',
+        locale: 'ko'
+      });
+      calendar.render();
+    });
+  </script>
+  <style>
+    .title {
+      background-color: white;
+      padding: 5px 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    #search_bar {
+      width: 650px;
+      height: 150px;
+      background-color: white;
+      margin-top: -20px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
+    #search_bar > p {
+      color: lightgray;
+      font-weight: 500;
+      font-size: .8em;
+      margin: 15px 0 0 35px;
+      height: 20px;
+    }
+    
+    form {
+      height: 50px;
+      margin: 5px 0 0 20px;
+    }
+    
+    input[type="text"] {
+      padding: 5px 20px;
+      width: 450px;
+      border-radius: 18px;
+      border: 1px solid black;
+    }
+    
+    input[type="submit"] {
+      background-color: #81CD28;
+      padding: 5px 20px;
+      border-radius: 18px;
+      font-weight: bold;
+      font-size: 1.1em;
+      color: white;
+      margin-left: 10px;
+    }
+    
+    .status_search {
+      margin: 10px 0 0 30px;
+    }
+    
+    .status_search > span {
+      font-weight: bold;
+      color: gray;
+    }
+    
+    .status_search > button {
+      display: inline-block;
+      padding: 5px 20px;
+      border: 1px solid black;
+      border-radius: 14px;
+      font-weight: bold;
+      margin: 0 5px;
+    }
+
+    .border-red {
+      border: 1px solid red !important;
+    }
+    
+    .table_title {
+      margin-bottom: -50px;
+      margin-top: 20px;
+      background-color: white;
+      width: 180px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      font-weight: bold;
+      border-radius: 15px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+    
+    .regist_btn {
+      background-color: #81CD28;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-weight: bold;
+      color: white;
+      position: relative;
+      top: 12px;
+      left: calc(100vw - 600px);
+    }
+    
+    #table_content {
+      min-width: 1300px;
+      width: 95%;
+      height: 500px;
+      background-color: white;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+      padding: 50px;
+    }
+    
+    table {
+      width: 100%;
+    }
+    
+    table, tr, th, td {
+      border-collapse: collapse;
+      border: 2px solid lightgray;
+      padding: 5px;
+      text-align: center;
+    }
+    
+    table th {
+      background-color: #FAFAFA;
+    }
+    
+    table tbody tr:nth-of-type(even) {
+      background-color: #EFFBEF;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div id="header-controller" style="width: 310px; float: left;">
+    <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+  </div>
+  <div id="content">
+    <div id="content_wrap">
+      <!-- breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/main">
+          <img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+        </a>
+        &nbsp;
+        <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+        &nbsp;
+        <a href="/approval">
+          <span style="color: #ababab; font-weight: bold;">전자결재</span>
+        </a>
+      </div>
+      <div class="title">결재 조회</div>
+      <div id="search_bar">
+        <p>발주 번호, 거래처명을 입력하여 검색할 수 있습니다.</p>
+        <form action="">
+          <input type="text" name="query">
+          <input type="submit" value="조회">
+        </form>
+        <div class="status_search">
+          <span>상태 조회</span>
+          <button type="button">전 체</button>
+          <button type="button">결재대기</button>
+          <button type="button">결재중</button>
+          <button type="button">결재완료</button>
+          <button type="button" class="border-red">반려</button>
+        </div>
+      </div>
+      <div class="table_title">
+        전자결재 리스트
+      </div>
+      <div class="regist_btn">
+        <button type="button">신규결재생성</button>
+      </div>
+      <div id="table_content">
+        <table>
+          <colgroup>
+            <col style="width: 10%;">
+            <col>
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>결재번호</th>
+              <th>발주처</th>
+              <th>담당자</th>
+              <th>발주일자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${!approvals.isEmpty()}" th:each="app, status : ${approvals}">
+              <td>
+                <a th:href="@{/approval/detail/{approval_no}(approval_no = ${app.approvalNo})}" th:text="${app.approvalNo}"
+                   onclick="window.open(this.href,
+                '_blank',
+                'width=1200, height=800')
+                return false;" class="font-bold">
+                  240409120123456
+                </a>
+              </td>
+
+              <td th:text="${app.buyer.buyerName}">CU 홍대입구역점</td>
+              <td th:text="${app.buyer.buyerAgent}">홍길동</td>
+              <td th:text="${app.ordering.orderDate}">2024-09-12</td>
+
+            </tr>
+            <tr th:if="${approvals.isEmpty()}">
+              <td colspan="5" class="font-bold">등록된 결재정보가 존재하지 않습니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

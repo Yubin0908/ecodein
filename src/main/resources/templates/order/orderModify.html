@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>[상세페이지]발주 수정</title>
+  <link href="/css/default-style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+
+  <style>
+
+    .breadcrumb {
+      width: 50%;
+      height: 40px;
+    }
+
+    .main-content {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      width: 800px;
+    }
+
+    .register-content {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      min-height: 600px;
+      max-height: 900px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f3f4f6;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+
+    .button-register {
+      background-color: #81CD28;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      float: right;
+    }
+
+    .registeration {
+      justify-content: center;
+      margin: 50px 16% 60px 14%;
+    }
+
+    .rounded-input {
+      border-radius: 10px;
+    }
+
+    .rounded-button {
+      border-radius: 10px;
+    }
+
+    .search-button {
+      width: 130px;
+      background-color: #81CD28;
+    }
+
+    .button {
+      background-color: transparent;
+      color: green;
+      border: 2px solid green;
+      padding: 5px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      line-height: 25px;
+      margin-left: 15px;
+    }
+
+    .button:hover {
+      background-color: green;
+      color: white;
+    }
+
+    .button.active {
+      background-color: green;
+      color: white;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding-left: 0;
+      list-style: none;
+      margin-top: 50px;
+      margin-bottom: 30px;
+    }
+
+    .page-link {
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      margin: 0 1px;
+      text-decoration: none;
+      color: #000;
+      border-radius: 5px;
+    }
+
+    .page-link:hover {
+      background-color: #f1f1f1;
+    }
+
+    body > div:nth-last-child(1) {
+      z-index: 0 !important;
+    }
+
+    .flex {
+      display: block !important;
+    }
+
+    input:active, input:focus {
+      border: 2px solid black !important;
+    }
+
+  </style>
+</head>
+
+<body>
+<!-- 사이드바 -->
+<div id="header-controller" style="width: 310px; float: left;">
+  <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<div id="content">
+  <div id="content_wrap">
+
+    <!-- breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/main">
+        <img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <a href="/order/1/all">
+        <span style="color: #ababab; font-weight: bold;">발주 관리</span>
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <span style="font-weight: bold;">발주 등록</span>
+    </div>
+
+    <!-- 발주 조회 -->
+    <div class="main-content">
+      <h2 class="text-2xl font-bold mb-4">발주 조회</h2>
+      <form action="/order/1/all" method="get">
+        <div class="flex mb-4">
+          <input class="border border-gray-300 p-2 w-4/5 rounded-input"
+                 name="query" placeholder="발주번호, 거래처를 입력하세요."
+                 type="text">
+          <button class="bg-green-81CD28 py-2 text-white px-4 ml-3 rounded-button search-button"
+                  type="submit">조 회
+          </button>
+        </div>
+
+        <span>진행상태</span>
+        <div class="inline">
+          <button class="button" type="button"
+                  onclick="location.href='/order/1/all'; setActiveButton(this)">전체
+          </button>
+          <button type="button" class="button" onclick="location.href='/order/1/accept'; setActiveButton(this)">접수
+          </button>
+          <button type="button" class="button" onclick="location.href='/order/1/validation'; setActiveButton(this)">결재완료
+          </button>
+          <button type="button" class="button" onclick="location.href='/order/1/progress'; setActiveButton(this)">출고진행
+          </button>
+          <button type="button" class="button" onclick="location.href='/order/1/complete'; setActiveButton(this)">출고완료
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!--발주 등록 폼-->
+    <div class="register-content">
+<!--      <form action="#" onsubmit="submit_control (this)">-->
+        <button class="button-register" onclick="submit_control()">저장</button>
+        <div class="grid grid-cols-2 gap-6 registeration">
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900" for="manager">담당자</label>
+            <div class="mt-2">
+              <input autocomplete="given-name"
+                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
+                     sm:text-sm sm:leading-6 pl-2"
+                     id="manager" name="user_id"
+                     th:value="${session.user.user_id}"
+                     type="text" readonly>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900" for="client">거래처</label>
+            <div class="mt-2">
+              <input autocomplete="given-name"
+                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
+                     sm:text-sm sm:leading-6 pl-2"
+                     id="client"
+                     th:value="${order.buyerCode.buyer_name}"
+                     type="text" readonly>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900" for="due-date">납기일자</label>
+            <div class="mt-2">
+              <input autocomplete="given-name"
+                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
+                     sm:text-sm sm:leading-6 pl-2 pr-2"
+                     id="due-date" name="due_date" th:value="${order.dueDate}"
+                     type="date">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900" for="client-code">거래처 코드</label>
+            <div class="mt-2">
+              <input autocomplete="given-name" th:value="${order.buyerCode.buyerCode}"
+                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
+                     sm:text-sm sm:leading-6 pl-2"
+                     id="client-code" name="buyerCode"
+                     type="text" readonly>
+            </div>
+          </div>
+        </div>
+      <button class="inline text-gray bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none
+           focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
+            dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              data-modal-target="popup-modal-3"
+              data-modal-toggle="popup-modal-3"
+              type="button">
+        상 품 검 색
+      </button>
+      <table id="parant-table">
+        <thead>
+        <tr>
+          <th>상품번호</th>
+          <th>상품명</th>
+          <th>단가</th>
+          <th>수량</th>
+        </tr>
+        </thead>
+        <tbody id="productTableBody">
+        <tr class="default">
+          <td colspan="5">[상품검색]버튼을 클릭해서 주문하세요!</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- modal (상품검색) -->
+      <div class="hidden fixed max-w-[960px] mx-auto bg-white shadow-lg p-5 rounded-lg"
+           id="popup-modal-3"
+           style="left: 50%; top: 20%; transform: translateX(-50%); z-index: 1;
+                  flex: none !important; width: 40%; max-width: 960px;">
+        <div class="block mb-4 mx-auto border-b border-slate-300 pb-2 max-w-[360px]">
+          <p class='block w-full px-4 py-2 text-center text-slate-700 transition-all '>
+           <b>상품검색</b>
+          </p>
+        </div>
+        <div class="w-full flex justify-between items-center mb-3 mt-12 pl-3">
+          <div class="mx-3">
+            <div class="w-full max-w-sm min-w-[200px] relative">
+              <div class="relative">
+                <input
+                        class="bg-white w-full pr-11 h-10 pl-3 py-2 bg-transparent placeholder:text-slate-400
+                        text-slate-700 text-sm border border-slate-200 rounded transition duration-300 ease
+                        focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
+                        placeholder="상품코드/상품명 검색..."
+                        id="searchInput"
+                />
+                <button
+                        class="absolute h-8 w-8 right-3 top-1 my-auto px-2 flex items-center rounded "
+                        type="button"
+                        onclick="searchProducts()"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                       stroke="currentColor" class="w-8 h-8 text-slate-600">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md
+                    rounded-lg bg-clip-border ">
+          <table class="w-full text-left table-auto min-w-max" id="productTable">
+            <thead>
+            <tr class="border-b border-slate-300 bg-slate-50">
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">이미지</th>
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">상품코드</th>
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">상품명</th>
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">재고</th>
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">단가</th>
+              <th class="p-4 text-sm font-normal leading-none text-slate-500">선택</th>
+            </tr>
+            </thead>
+            <tbody class="item-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+<script th:inline="javascript">
+
+  var item_array = [];
+  var items = new Array(10);
+  var point = 0;
+  for (let idx = 0; idx <= 10; idx++) {
+    items[idx] = new Array(4);
+
+  }
+
+  // 상품 수정 페이지 로드 시, 배열 초기화
+  var array = [[${orderDetails}]];
+  console.log(array);
+
+  for (let idx = 0; idx < array.length; idx++) {
+    // item_array.push(array[idx].item.itemNo);
+    items[idx][0] = array[idx].item.itemNo;
+    items[idx][1] = array[idx].quantity;
+    items[idx][2] = array[idx].item.itemPrice;
+    items[idx][3] = array[idx].item.itemName;
+
+    addProduct(array[idx].item.itemNo, array[idx].item.itemName, array[idx].item.itemPrice, array[idx].quantity);
+  }
+
+  // 출고조회_전체/접수/결재완료/출고진행/출고완료
+  function setActiveButton(clickedButton) {
+    const buttons = document.querySelectorAll('.button');
+    buttons.forEach(button => button.classList.remove('active'));
+    clickedButton.classList.add('active');
+  }
+
+  // 발주 등록 테이블에 추가
+  function addProduct(itemNo, itemName, price, quantity) {
+    document.querySelector('.default').classList.add('hidden');
+
+    let stock = findIndex(items, itemNo);
+
+    function findIndex(array, itemNo) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i][0] === itemNo) {
+          return items[i][1];
+        }
+      }
+      return undefined;
+    }
+
+    if (!item_array.includes(itemNo)){
+      const tableBody = document.getElementById('productTableBody');
+      const table = document.getElementById('parant-table');
+      const tr = document.createElement('tr');
+      const td_1 = document.createElement('td');
+      td_1.textContent = itemNo;
+      const td_2 = document.createElement('td');
+      td_2.textContent = itemName;
+      const td_3 = document.createElement('td');
+      td_3.textContent = price;
+      const td_4 = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = "number";
+      input.name = "quantities";
+      input.value = (stock === 0 && stock !== undefined) ? stock : quantity;
+      input.onchange = function() { quantity_modify(itemNo, this); };
+
+      td_4.appendChild(input);
+      tr.appendChild(td_1);
+      tr.appendChild(td_2);
+      tr.appendChild(td_3);
+      tr.appendChild(td_4);
+      tableBody.appendChild(tr);
+
+      items[point++][0] = itemNo;
+      item_array.push(itemNo);
+
+      console.log('items - ', items)
+      console.log('point - ', point)
+
+    } else {
+      alert('이미 추가된 상품입니다.');
+    }
+    console.log('items : ', items);
+  }
+
+  // items 배열에 itemNo가 일치하는 상품 재고 업데이트
+  function quantity_modify (itemNo, e) {
+    
+    for (let idx = 0; idx < point; idx++) {
+      if (items[idx][0] === itemNo) {
+        items[idx][1] = e.value;
+      }
+    }
+  }
+
+  // Front -> back 데이터 처리
+  function submit_control() {
+    const formData = new FormData();
+    console.log(items);
+
+    const user_id = document.querySelector('input[name="user_id"]').value;
+    const buyer_code = document.querySelector('input[name="buyerCode"]').value;
+    const due_date = document.querySelector('input[name="due_date"]').value;
+    const orderNos = [];
+    const quantities = [];
+
+    for (let idx = 0; idx < items.length; idx++) {
+      if (items[idx][0] !== undefined) {
+        console.log('items[idx]', items[idx][0])
+        orderNos.push(items[idx][0]);
+        quantities.push(items[idx][1]);
+      }
+    }
+
+    formData.append('orderNo', array[0].order.orderNo);
+    formData.append('userId', user_id);
+    formData.append('buyerCode', buyer_code);
+    formData.append('due_date', due_date);
+
+    for (let idx = 0; idx < orderNos.length; idx++) {
+      console.log('item - ', items[idx])
+      formData.append('order_nos['+idx+']', orderNos[idx]);
+      formData.append('quantities['+idx+']', quantities[idx]);
+    }
+
+    fetch('/order/modify', {
+      method: 'post',
+      body: formData
+    })
+        .then(data => location.href = `${data.url}`)
+  }
+
+  // 발주등록 검색 결과를 화면에 표시
+  function searchProducts() {
+    const query = document.getElementById('searchInput').value.trim();  // 입력값 트림
+    const item_body = document.querySelector('.item-body');
+    if (query === "") {
+      alert("검색어를 입력하세요.");
+      return;
+    }
+
+    fetch(`/order/search?query=${query}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data); // 서버에서 응답한 데이터 출력
+          item_body.innerHTML = '';
+
+          if (data.length > 0) {
+            data.forEach(product => {
+              console.log(product)
+              if (!product.item.isMaterial) {
+                item_body.innerHTML += `
+                    <tr>
+                        <td><img src="${product.item.itemImage}" alt="상품 이미지" width="50"></td>
+                        <td>${product.item.itemNo}</td>
+                        <td>${product.item.itemName}</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.item.itemPrice}</td>
+                        <td><button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"
+                               onclick="addProduct(${product.item.itemNo}, '${product.item.itemName}', ${product.item.itemPrice}),
+                                        item_array.push(${product.item.itemNo})">선택</button></td>
+                    </tr>`;
+              }
+            });
+          } else {
+            item_body.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
+          }
+        })
+        .catch(error => console.error('Error:', error));
+  }
+
+</script>
+</body>
+</html>

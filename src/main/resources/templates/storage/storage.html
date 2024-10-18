@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>창고 리스트</title>
+  <link rel="stylesheet" href="/css/default-style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    .main-content {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      width: 800px;
+    }
+    
+    .register-content {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: #f3f4f6;
+    }
+    
+    tbody tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+    
+    .button-register {
+      background-color: #81CD28;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 20px;
+    }
+    
+    .rounded-input {
+      border-radius: 10px;
+    }
+    
+    .rounded-button {
+      border-radius: 10px;
+    }
+    
+    .search-button {
+      width: 130px;
+      background-color: #81CD28;
+    }
+    
+    .button {
+      background-color: transparent;
+      color: green;
+      border: 2px solid green;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    
+    .button:hover {
+      background-color: green;
+      color: white;
+    }
+    
+    .button.active {
+      background-color: green;
+      color: white;
+    }
+    
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding-left: 0;
+      list-style: none;
+      margin-top: 50px;
+      margin-bottom: 20px;
+    }
+    
+    .page-link {
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      margin: 0 5px;
+      text-decoration: none;
+      color: #000;
+      border-radius: 5px;
+    }
+    
+    .page-link:hover {
+      background-color: #f1f1f1;
+    }
+    
+    .table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    .table thead {
+      float: left;
+      width: 890px;
+    }
+    
+    .table thead tr {
+      display: table;
+      width: 870px;
+    }
+    
+    .table tbody {
+      overflow-y: auto;
+      overflow-x: hidden;
+      float: left;
+      width: 890px;
+      height: 350px;
+    }
+    
+    .table tbody tr {
+      display: table;
+      width: 870px;
+    }
+    
+    .table thead th:nth-of-type(1),
+    .table tbody td:nth-of-type(1) {
+      width: 15%;
+    }
+    
+    .table thead th:nth-of-type(2),
+    .table tbody td:nth-of-type(2) {
+      width: 15%;
+    }
+    
+    .table thead th:nth-of-type(3),
+    .table tbody td:nth-of-type(3) {
+      width: auto;
+    }
+    
+    .table thead th:nth-of-type(4),
+    .table tbody td:nth-of-type(4) {
+      width: 10%;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      cursor: pointer;
+    }
+    ::-webkit-scrollbar-track {
+      background-color: lightblue;
+    }
+    
+    ::-webkit-scrollbar-track-piece {
+      background-color: #eee;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background-color: #ccc;
+    }
+    
+    ::-webkit-scrollbar-button {
+      background-color: #eee;
+      width: 5px;
+      height: 5px;
+    }
+
+  </style>
+  <script>
+    const url = URL;
+    console.log(url)
+    
+    function closeModal () {
+      const static_modal = document.querySelector('#static-modal');
+      const update_time = document.querySelector('#update_time');
+      
+      static_modal.classList.add('hidden');
+      update_time.textContent = '업데이트 안됨';
+    }
+    
+    function activeModal (storageNo) {
+      const static_modal = document.querySelector('#static-modal');
+      const detail_storage_name = document.querySelectorAll('.detail_storage_name');
+      const detail_storage_address = document.querySelector('.detail_storage_address');
+      const status_label = document.querySelector('.status_label');
+      const storage_num = document.querySelector('input[type="number"]');
+      const data_line = document.querySelector('tbody.data-board');
+      const modify_button = document.querySelector('.modify-button');
+      
+      data_line.innerHTML = '';
+      
+			fetch('/storage/detail/' + storageNo, {
+				method: 'get',
+				headers: {'Content-Type' : "application/json"}
+			})
+				.then(res => res.json())
+				.then(data => {
+					detail_storage_name[0].textContent = data.storageName;
+					detail_storage_name[1].textContent = data.storageName;
+          detail_storage_address.value = data.storageSite;
+          storage_num.value = data.storageNo;
+          modify_button.setAttribute('onclick', `modifyModalActive(${data.storageNo})`)
+          
+          if (data.storageStatus == '정상') {
+            status_label.style.backgroundColor = '#9FF781';
+            status_label.innerText = data.storageStatus;
+          } else {
+            status_label.style.backgroundColor = '#FA5858';
+            status_label.textContent = '확인필요';
+          }
+				})
+      
+      static_modal.classList.remove('hidden');
+    }
+    
+		function update_stock() {
+			const update_time = document.querySelector('#update_time');
+			const storage_num = document.querySelector('input[type="number"]').value;
+			const data_line = document.querySelector('tbody.data-board');
+
+			let today = new Date();
+
+			update_time.innerText = today.getFullYear() + '년 ' + (today.getMonth() + 1) + '월 '
+				+ today.getDate() + '일 ' + today.getHours() + '시 ' + today.getMinutes() + '분 ' + today.getSeconds() + '초에 업데이트됨.';
+
+			data_line.textContent = '';
+
+			fetch('/storage/storageStock/' + storage_num, {
+				method: 'get',
+				headers: {'Content-Type': 'application.json'}
+			})
+				.then(res => res.json())
+				.then(data => {
+          console.log(data)
+					for (let idx in data) {
+						data_line.innerHTML +=
+            `
+              <tr class="data overflow-scroll">
+                <td>${data[idx].stockNo}</td>
+                <td><img src="${data[idx].item.itemImage}" alt="" style="width: 150px; height: auto;"></td>
+                <td class="truncate md:text-clip"><a href="/stock?search=${data[idx].item.itemName}&storage_no=${data[idx].storage.storageNo}">${data[idx].item.itemName}</a></td>
+                <td>${data[idx].quantity}</td>
+              </tr>
+            `;
+					}
+				})
+				.catch(err => {
+					data_line.innerHTML += `
+                                    <tr>
+                                      <td colspan="4" class="font-bold">조회된 데이터가 없습니다!</td>
+                                    </tr>
+                                 `;
+				})
+		}
+		
+		function regist_modal_deactive () {
+			const regist_modal = document.querySelector('#regist-modal');
+			
+			regist_modal.classList.add('hidden'); 
+		}
+		
+		function regist_modal_active () {
+			const regist_modal = document.querySelector('#regist-modal');
+			
+			regist_modal.classList.remove('hidden'); 
+		}
+		
+		function remove_request_control (storage_no) {
+			fetch('/storage/storageStock/' + storage_no, {
+				method: 'get',
+				headers: {'Content-Type' : 'application.json'}
+			})
+				.then(data => {
+					console.log(data);
+					
+					if (data != null) {
+						if (confirm('해당 창고에 재고가 존재합니다. 그래도 삭제하시겠습니까? <br> ※ 삭제 시, 재고가 삭제됩니다.')) {
+							remove_action (storage_no);
+						} 
+					} else {
+						remove_action (storage_no);
+					}
+				})
+				
+				const remove_action = storage_no => {
+					fetch('/storage/remove/' + storage_no, {
+						method: 'get',
+						headers: {'Cotent-Type' : 'application.json'}
+					})
+						.then(res => res.json())
+						alert('창고가 삭제되었습니다.');
+						location.reload(true);
+				}
+    
+		}
+		
+		function search_control () {
+			const storage_search = document.querySelector('#storage_search').value;
+			
+			location.href = '/storage/1/' + (storage_search == '' ? 'keyword' : storage_search) + '/200';
+		}
+  
+    function modifyModalActive(storage_no) {
+      const modify_modal = document.querySelector('#modify-modal');
+      const storage_name = document.querySelector('#modify_storage_name');
+      const storage_address = document.querySelector('#modify_storage_address');
+      const storage_no_label = document.querySelector('#storage_no');
+      const storage_status = document.querySelector('#storage_status');
+      
+      modify_modal.classList.remove('hidden');
+      
+      fetch('/storage/detail/' + storage_no, {
+        method: 'get',
+        headers: {'Cotent-Type' : 'application.json'}
+      })
+      .then(res => res.json())
+      .then(data => {
+        storage_name.value = data.storageName;
+        storage_address.value = data.storageSite;
+        storage_no_label.value = data.storageNo;
+        storage_status.value = data.storageStatus;
+      })
+    }
+    
+    function modifyModalDeActive() {
+      const modify_modal = document.querySelector('#modify-modal');
+      
+      modify_modal.classList.add('hidden');
+    }
+    
+    function fetch_update_storage (e) {
+      e.preventDefault();
+      const storageName = document.querySelector('#modify_storage_name').value;
+      const storageAddress = document.querySelector('#modify_storage_address').value;
+      const storageStatus = document.querySelector('#storage_status').value;
+      const storageNo = document.querySelector('#storage_no').value;
+      
+      const formData = new FormData();
+      
+      formData.append('storageName', storageName);
+      formData.append('storageSite', storageAddress);
+      formData.append('storageStatus', storageStatus);
+      formData.append('storageNo', storageNo);
+      
+      
+      fetch('/storage/modify', {
+        method: 'post',
+        body: formData
+      })
+          .then(res => res.json())
+          .then(data => {
+            alert('창고 정보가 수정되었습니다.');
+            modifyModalDeActive ();
+            closeModal();
+            activeModal(storageNo);
+            
+          });
+      
+      
+    }
+  </script>
+</head>
+
+<body>
+	<script th:if="${session.admin == null}">
+		alert('인가된 권한이 없습니다. 관리자에게 문의하세요.');
+		history.back();
+	</script>
+	<!-- 사이드바 -->
+  <div id="header-controller" style="width: 310px; float: left;">
+    <th:block th:replace="fragments/sidebar :: sidebarFragment" />
+  </div>
+	<!-- 메인 콘텐츠 -->
+	<div id="content">
+	  <div id="content_wrap">
+	    
+	    <!-- breadcrumb -->
+	    <div class="breadcrumb">
+	      <a href="/main">
+	        <img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+	      </a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+	      <a href="/storage/1">
+	        <span style="color: #ababab; font-weight: bold;">창고 관리</span>
+	      </a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+	      <span style="font-weight: bold;">창고 리스트</span>
+	    </div>
+	    
+	    <!-- 창고 조회 -->
+	    <div class="main-content">
+	      <h2 class="text-2xl font-bold mb-4">창고 조회</h2>
+	      <div class="flex mb-4">
+	        <input id="storage_search" type="text" class="border border-gray-300 p-2 w-full rounded-input"
+	               placeholder="창고명 또는 구역을 입력하세요.">
+	        <button onclick="search_control ()" class="bg-green-81CD28 text-white px-4 ml-2 rounded-button search-button">조 회</button>
+	      </div>
+	      
+	      <span class="text-black mr-5 font-bold">상태별 조회</span>
+	      <div class="inline">
+	        <button type="button" onclick="location.href='/storage/1'" 
+									class="rounded-3xl py-3 px-7 mr-5" style="border: 2px solid darkgray">전 체</button>
+	        <button type="button" onclick="location.href='/storage/1/keyword/정상'" 
+									class="rounded-3xl py-3 px-7 mr-5" style="border: 2px solid darkgreen">정 상</button>
+	        <button type="button" onclick="location.href='/storage/1/keyword/확인필요'" 
+									class="rounded-3xl py-3 px-7 mr-5" style="border: 2px solid red">확인필요</button>
+	      </div>
+	    </div>
+	    
+	    <!-- 창고 리스트  -->
+	    <div class="register-content">
+	      <button class="button-register" onclick="regist_modal_active ()">창고 등록</button>
+	      <table>
+	        <caption class="text-left font-bold text-2xl mb-5" style="margin-top: -60px;">창고 조회 결과</caption>
+	        <colgroup>
+	          <col style="width: 30%">
+	          <col style="width: 30%">
+	          <col style="width: 15%">
+	          <col style="width: 15%">
+	          <col style="width: 10%">
+	        </colgroup>
+	        <thead>
+	          <tr>
+	            <th>창고명</th>
+	            <th>창고 위치</th>
+	            <th>창고 상태</th>
+	            <th>창고 상세 정보</th>
+	            <th>창고 삭제/<br>상태 변경</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr th:if="${storages.isEmpty()}">
+	            <td colspan="5">조회 결과가 존재하지 않습니다.</td>
+	          </tr>
+	          <tr th:if="${storages != null}" th:each="storage, status: ${storages}">
+	            <td th:text="${storage.storageName}">창고 명</td>
+	            <td th:text="${storage.storageSite}">창고 구역명</td>
+	            <td>
+	              <span th:if="${storage.storageStatus.equals('정상')}" class="py-1 px-10 rounded-full font-bold text-white"
+											style="background-color: #9FF781">정상</span>
+	              <span th:if="${!storage.storageStatus.equals('정상')}"
+                      class="py-1 px-6 rounded-full font-bold text-white"
+											style="background-color: #FA5858">확인 필요</span>
+	            </td>
+	            <td>
+								<a class="cursor-pointer py-1 px-4 bg-yellow-300 rounded-full font-bold text-white" 
+									 th:onclick="activeModal ([[${storage.storageNo}]])">정보 보기</a>
+						 	</td>
+	            <td>
+								<a style="cursor: pointer;" th:onclick="remove_request_control ([[${storage.storageNo}]])">삭제</a>
+                <span th:if="${!storage.storageStatus.equals('정상')}"
+                      style="border-left: 2px solid black; margin: 0 5px"></span>
+                <a th:if="${!storage.storageStatus.equals('정상')}" style="border-radius: 15px;
+                background-color: limegreen; padding: 3px 8px; color: white; font-weight: bold;"
+                th:href="@{/storage/status_modify/{storageNo}/정상(storageNo = ${storage.storageNo})}">
+                  정상화
+                </a>
+							</td>
+	          </tr>
+	        </tbody>
+	      </table>
+	      
+	      <!-- 페이지네이션  -->
+	      <nav aria-label="Page navigation example">
+	        <ul class="pagination">
+	          <li th:classappend="${!storages.hasPrevious} ? 'hidden'">
+	            <a class="page-link" th:href="@{{page}(page = ${page -1})}">&lt;</a>
+	          </li>
+	          <li th:each="page: ${#numbers.sequence(1, storages.totalPages)}"
+	              th:if="${page >= storages.number-5 and page <= storages.number+5}"
+	              th:classappend="${page - 1 == storages.number} ? 'active'">
+	            <a th:text="${page}" class="page-link" th:href="@{{page}(page = ${page})}"> </a>
+	          </li>
+	          <li th:classappend="${!storages.hasNext()} ? 'hidden'">
+	            <a class="page-link" th:href="@{{page}(page = ${page + 1})}">&gt;</a>
+	          </li>
+	        </ul>
+	      </nav>
+	    </div>
+	  </div>
+	  
+	  <!-- Datail modal -->
+	  <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" 
+				 class="hidden fixed w-6/12 z-50 justify-center items-center" style="top: 25%; left: 35%; width: 50%;">
+	    <div class="relative p-4 w-full" style="min-width: 950px; max-height: 600px;">
+	      <!-- Modal content -->
+	      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+	        <!-- Modal header -->
+	        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+	          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+	            <span class="detail_storage_name">창고</span> 상세정보
+	          </h3>
+            <div>
+              <button type="button"
+                      class="border-solid border-2 border-inherit py-2 px-6 rounded-2xl bg-lime-300 font-bold modify-button"
+                      >
+                수정
+              </button>
+              <button type="button" class="border-solid border-2 border-inherit py-2 px-6 rounded-2xl bg-gray-200"
+                      onclick="closeModal ()">
+                닫기
+              </button>
+              
+            </div>
+	        </div>
+	        <!-- Modal body -->
+	        <div class="p-4 md:p-5 space-y-4">
+	          <input type="number" class="hidden">
+	          <span class="font-bold text-lg">창고 주소</span>
+	          <span>
+							<input class="detail_storage_address" type="text" 
+										 style="color: black !important; padding-left: 15px; margin-left: 15px; width: 500px; 
+										 				border: 2px solid lightgray; border-radius: 15px; background-color: lightgray" 
+										 placeholder="서울 송파구" disabled>
+					 	</span>
+	          <span class="font-bold text-lg ml-7">상태</span>
+	          <span class="status_label ml-16 py-2 px-10 rounded-full font-bold text-white"></span>
+	        </div>
+	        <!-- Modal footer -->
+	        <h2 class="font-bold text-lg relative inline" style="top: 30px; left: 30px">
+						<span class="detail_storage_name">물류센터</span> 재고 현황
+					</h2>
+	        <span class="relative" style="top: 12px; left: 175px">
+	          <a onclick="update_stock ()" class="cursor-pointer absolute" style="width: 30px; top: 25px; left: -140px">
+	            <img src="/img/icon/icon-refrech.png" alt="" style="width: 15px;">
+	          </a>
+	          <span id="update_time" class="absolute w-80" style="top: 25px; left: -120px; color: gray; font-size: .7rem">
+	            업데이트 안됨.
+	          </span>
+	        </span>
+	        <div class="flex items-center p-4 md:p-5 rounded-b dark:border-gray-600">
+	          <table class="table">
+	            <colgroup>
+	              <col style="width: 15%">
+	              <col style="width: 15%">
+	              <col style="width: auto;">
+	              <col style="width: 10%">
+	            </colgroup>
+	            <thead>
+	              <tr>
+	                <th>재고번호</th>
+	                <th>이미지</th>
+	                <th>재고명</th>
+	                <th>재고수량(단위: 개)</th>
+	              </tr>
+	            </thead>
+	            
+	            <tbody class="font-bold data-board">
+	              <tr style="width: 100%">
+	                <td colspan="4">조회 결과가 존재하지 않습니다.</td>
+	              </tr>
+	            </tbody>
+	          </table>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+    <!-- Regist modal -->
+    <div id="regist-modal" tabindex="-1" aria-hidden="true"
+        class="hidden fixed z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        style="top: 40%; left: 50%; transform: translate(-5%, -5%);">
+       <div class="relative p-4 w-full max-w-md max-h-full">
+           <!-- Modal content -->
+           <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+               <!-- Modal header -->
+               <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                   <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                       창고 등록
+                   </h3>
+                   <button type="button"
+                           class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg
+                                  text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600
+                                  dark:hover:text-white" onclick="regist_modal_deactive ()">
+                       <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 14 14">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                       </svg>
+                       <span class="sr-only">Close modal</span>
+                   </button>
+               </div>
+               <!-- Modal body -->
+               <div class="p-4 md:p-5">
+                   <form class="space-y-4" action="/storage/add" method="post">
+                       <div>
+                           <label for="storage_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            <span class="font-bold text-xl">창고 이름</span>(Storage Name)</label>
+                           <input type="text" name="storageName"
+                                  id="storage_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm
+                                                           rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
+                                                           p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400
+                                                           dark:text-white" required />
+                       </div>
+                       <div>
+                         <label for="storage_site" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                          <span class="font-bold text-xl">창고 주소</span>(Storage Address)</label>
+                         <input type="text" name="storageSite" id="storage_site"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                       focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600
+                                       dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                       </div>
+                       <button type="submit" onclick="regist_modal_deactive ()"
+                               class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none
+                                      focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+                                      dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        창고 등록하기
+                      </button>
+                   </form>
+               </div>
+           </div>
+       </div>
+    </div>
+    <!-- Modify modal -->
+    <div id="modify-modal" tabindex="-1" aria-hidden="true"
+         class="hidden fixed z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+         style="top: 40%; left: 50%; transform: translate(-5%, -5%);">
+      <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <!-- Modal header -->
+          <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              창고 수정
+            </h3>
+            <button type="button"
+                    class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg
+                                  text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600
+                                  dark:hover:text-white" onclick="modifyModalDeActive ()">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                   fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <!-- Modal body -->
+          <div class="p-4 md:p-5">
+            <form class="space-y-4" onsubmit="fetch_update_storage (event)">
+              <div>
+                <label for="modify_storage_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <span class="font-bold text-xl">창고 이름</span>(Storage Name)</label>
+                <input type="text" name="storageName"
+                       id="modify_storage_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm
+                                                           rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full
+                                                           p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400
+                                                           dark:text-white" required />
+              </div>
+              <div>
+                <label for="modify_storage_address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <span class="font-bold text-xl">창고 주소</span>(Storage Address)</label>
+                <input type="text" name="storageSite" id="modify_storage_address"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                       focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600
+                                       dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+              </div>
+              <div class="hidden">
+                <label for="storage_no"
+                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >
+                  <span class="font-bold text-xl">창고 상태 변경</span>(Storage Status)
+                </label>
+                <input type="text" name="storageNo" id="storage_no"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                                       focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600
+                                       dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required
+                >
+                <input type="hidden" name="storageStatus" id="storage_status">
+              </div>
+              <button type="submit" onclick="regist_modal_deactive ()"
+                      class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none
+                                      focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+                                      dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                창고 정보 수정
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

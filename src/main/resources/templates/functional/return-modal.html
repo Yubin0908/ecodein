@@ -1,0 +1,743 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+  
+  
+  <title></title>
+  <style>
+    .modal {
+      background: #F5F5F5;
+      width: 1000px;
+      height: 700px;
+      border-radius: 20px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+    
+    .modal-tab {
+      width: 100%;
+      height: 40px;
+      border-radius: 20px 20px 0 0;
+      background: #81CD28;
+    }
+    
+    .modal-window-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+      line-height: 40px;
+      margin: auto 0 auto 15px;
+    }
+    
+    .btn-close {
+      font-size: 20px;
+      color: #fff;
+      float: right;
+      border: none;
+      background: none;
+      margin-right: 15px;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    
+    .modal-title-bubble {
+      background-color: #BBE18F;
+      width: 155px;
+      height: 35px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: black;
+      margin-top: 50px;
+      margin-left: 30px;
+      line-height: 35px;
+    }
+    
+    .modal-menu-bubble {
+      width: 90%;
+      height: 140px;
+      background: #fff;
+      border: 1px solid lightgray;
+      border-radius: 10px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+      margin: 20px auto;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+    
+    .guide-text {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    
+    #dropdown-year, #dropdown-month, #dropdown-day {
+      background: #fff;
+      color: black;
+      border: 1px solid gray;
+      width: 100px;
+      height: 30px;
+    }
+    
+    #yearDropdown {
+      width: 100px;
+      position: absolute;
+      inset: 0px auto auto 0px;
+      margin: 0px;
+      transform: translate(200px, 216px);
+    }
+    
+    #monthDropdown {
+      width: 100px;
+      position: absolute;
+      inset: 0px auto auto 0px;
+      margin: 0px;
+      transform: translate(318px, 216px);
+    }
+    
+    #dayDropdown {
+      width: 100px;
+      position: absolute;
+      inset: 0px auto auto 0px;
+      margin: 0px;
+      transform: translate(435px, 216px);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      cursor: pointer;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background-color: lightblue;
+    }
+    
+    ::-webkit-scrollbar-track-piece {
+      background-color: #eee;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background-color: #ccc;
+    }
+    
+    ::-webkit-scrollbar-button {
+      background-color: #eee;
+      width: 5px;
+      height: 5px;
+    }
+    
+    .modal-search-bubble-1, .modal-search-bubble-2 {
+      width: 55px;
+      border-radius: 5px;
+      background-image: url("/img/icon/icon-search.png");
+      background-repeat: no-repeat;
+      background-position: center right;
+      cursor: pointer;
+    }
+    
+    .order-no-input {
+      display: inline-block;
+      position: relative;
+      top: -35px;
+      right: -194px;
+      border-radius: 15px;
+      width: 55%;
+      height: 34px;
+    }
+    
+    .line-second {
+      margin-top: 10px;
+    }
+    
+    .modal-information {
+      margin-top: 15px;
+      margin-left: 50px;
+    }
+    
+    .modal-table {
+      width: 900px;
+      margin: 5px auto;
+      height: 274px;
+      overflow: auto;
+    }
+    
+    .modal-table thead {
+      background: #BBE19E;
+    }
+    
+  </style>
+  <script th:inline="javascript">
+    const tab = [[${tab}]];
+    const data = [[${serviceName}]];
+    console.log(tab)
+  </script>
+  
+  <script>
+    function modal_year_update() {
+      const now = new Date();
+      const year_dropdown = document.querySelector('#yearDropdown ul');
+      
+      let year = now.getFullYear();
+      for (let idx = 0; idx < 4; idx++) {
+        year_dropdown.innerHTML += `
+                                   <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 text-center" aria-labelledby="dropdown-year">
+                                      <li>
+                                        <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white pointer-event" onclick="year_selector (this)">
+                                          ${year++}
+                                        </span>
+                                      </li>
+                                    </ul>
+                                   `
+      }
+      
+      modal_month_update(now.getMonth());
+    }
+    
+    function modal_month_update() {
+      let defualtmonth = new Date().getMonth() + 1;
+      let month = defualtmonth;
+      const month_dropdown = document.querySelector('#monthDropdown ul');
+      
+      for (let idx = month; idx <= 12; idx++) {
+        month_dropdown.innerHTML += `
+                                  <li>
+                                  <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-center" onclick="month_selector(this)">
+                                    ${month++}
+                                  </span>
+                                  </li>
+                                 `;
+      }
+      
+      modal_day_update(defualtmonth);
+    }
+    
+    function  modal_day_update(month) {
+      console.log('month : ', month)
+      const now = new Date();
+      const day = new Date(now.getFullYear(), month, 0).getDate();
+      const day_dropdown = document.querySelector('#dayDropdown ul');
+      
+      for (let idx = now.getDate(); idx <= day; idx++) {
+        day_dropdown.innerHTML += `
+                                  <li>
+                                    <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="day_selector (this)">
+                                      ${idx}
+                                    </a>
+                                  </li>
+                                `;
+      }
+    }
+    
+    modal_year_update();
+    
+    function year_selector(e) {
+      const value = e.textContent;
+      const button = document.querySelector('#dropdown-year');
+      const year_dropDown = document.querySelector('#yearDropdown');
+      
+      year_dropDown.classList.add('hidden');
+      
+      button.innerHTML = `
+        ${value}
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+    }
+    
+    function month_selector(e) {
+      const value = e.textContent;
+      const button = document.querySelector('#dropdown-month');
+      const month_dropdown = document.querySelector('#monthDropdown');
+      
+      month_dropdown.classList.add('hidden');
+      
+      button.innerHTML = `
+         ${value} &nbsp;&nbsp;&nbsp;
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+    }
+    
+    function day_selector(e) {
+      const value = e.textContent;
+      const button = document.querySelector('#dropdown-day');
+      const day_dropdown = document.querySelector('#dayDropdown');
+      
+      day_dropdown.classList.add('hidden');
+      
+      button.innerHTML = `
+         ${value} &nbsp;&nbsp;&nbsp;
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+      `;
+    }
+    
+    function sub_modal_event (e) {
+      const value = e.textContent;
+      const order_input = document.querySelector('.order-input');
+      
+      order_input.value = value.trim();
+      
+      document.querySelector('#medium-modal').classList.add('hidden');
+    }
+    
+    function manager_modal_event (e) {
+      const value = e.textContent;
+      const manager_input = document.querySelector('.manager-input');
+      
+      document.querySelector('#manager-modal').classList.add('hidden');
+      
+      manager_input.value = value.trim();
+    }
+    
+    function modal_close() {
+      document.querySelector('.modal').classList.add('hidden');
+    }
+  </script>
+  
+  <script th:inline="javascript" th:if="${session.user != null}">
+    var fetch_count = 0;
+    var item_list = [];
+    var return_item_list = [];
+    const buyer_code = [[${session.user.buyerCode.buyerCode}]];
+    
+    function fetch_orderList() {
+      document.querySelector('.modal-item-table').innerHTML = null;
+      fetch('/return/fetch-order/' + buyer_code, {
+        method: 'get',
+        headers: {'Content-Type': 'application/json'}
+      })
+          .then(res => res.json())
+          .then(data => {
+            const modal_order = document.querySelector('.modal-order-table');
+            modal_order.innerHTML = null;
+            
+            for (let idx in data) {
+              const orderDate = new Date(data[idx].order_date);
+              const dueDate = new Date(data[idx].due_date);
+              const formatting_orderDate = orderDate.getFullYear() + '년 ' + (orderDate.getMonth() + 1) + '월 ' +
+                  orderDate.getDate() + '일';
+              const formatting_dueDate = dueDate.getFullYear() + '년 ' + (dueDate.getMonth() + 1) + '월 ' +
+                  dueDate.getDate() + '일';
+              modal_order.innerHTML += `
+                          <tr class="bg-white dark:bg-gray-800 text-center">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                style="cursor: pointer;" onclick="sub_modal_event (this)" data-modal-hide="medium-modal">
+                              ${data[idx].orderNo}
+                            </th>
+                            <td class="px-6 py-4">
+                              ${formatting_orderDate}
+                            </td>
+                            <td class="px-6 py-4">
+                              ${formatting_dueDate}
+                            </td>
+                          </tr>
+                                    `;
+            }
+            
+            fetch_count = 0;
+          });
+    }
+    
+    function fetch_userList() {
+      fetch('/return/fetch-user/' + buyer_code, {
+        method: 'get',
+        headers: {'Content-Type': 'application/json'}
+      })
+          .then(res => res.json())
+          .then(data => {
+            const userList = document.querySelector('.modal-user-list');
+            userList.innerHTML = null;
+            console.log(data)
+            
+            for (let idx in data) {
+              userList.innerHTML += `
+              <tr class="bg-white dark:bg-gray-800">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    style="cursor: pointer;" onclick="manager_modal_event (this)"  data-modal-hide="manager-modal">
+                  ${data[idx].userId}
+                </th>
+                <td class="px-6 py-4">
+                  ${data[idx].userName}
+                </td>
+              </tr>
+            `;
+            }
+          })
+    }
+    
+    function fetch_item_list() {
+      const order_no = document.querySelector('.order-input').value;
+      
+      if (document.querySelector('.order-input').value == '') {
+        alert('발주번호가 선택되지 않았습니다.');
+        fetch_orderList();
+        document.querySelector('#medium-modal').classList.remove('hidden');
+        return;
+      }
+      
+      fetch('/return/fetch-orderDetail/' + order_no, {
+        method: 'get',
+        headers: {'Content-Type': 'application/json'}
+      })
+          .then(res => res.json())
+          .then(data => {
+            
+            const item_table = document.querySelector('.modal-item-table');
+            if (fetch_count != 1) {
+              item_list = data;
+              
+              for (let idx in data) {
+                item_table.innerHTML += `
+              <tr class="bg-white dark:bg-gray-800">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  ${data[idx].item.itemNo}
+                </th>
+                <td class="px-6 py-4">
+                  ${data[idx].item.itemName}
+                </td>
+                <td class="px-6 py-4">
+                  <input type="text" name="returnItemQty" value="${data[idx].quantity}" data-order-no="${data[idx].item.itemNo}" onchange="qty_update(${data[idx].item.itemNo}, this)">
+                </td>
+              </tr>
+            `
+              }
+            }
+            fetch_count = 1;
+          })
+    }
+    
+    function qty_update(itemNo, e) {
+      const value = e.value;
+      console.log(itemNo)
+      
+      for (let idx in item_list) {
+        if (item_list[idx].item.itemNo == itemNo) {
+          item_list[idx].quantity = value;
+        }
+      }
+    }
+    
+    function submit_event() {
+      const return_item_list = new Array(10);
+      
+      const year = parseInt(document.querySelector('#dropdown-year').textContent.trim());
+      const month = parseInt(document.querySelector('#dropdown-month').textContent.trim());
+      const day = parseInt(document.querySelector('#dropdown-day').textContent.trim());
+      const date = new Date(year, month, day);
+      
+      const user_id = document.querySelector('.manager-input').value;
+      const return_promise = document.querySelector('.return_promise').value;
+      
+      for (let idx in return_item_list) {
+        return_item_list[idx] = new Array(2);
+      }
+      
+      if (item_list == '') {
+        alert('반품할 상품이 등록되지 않았습니다.');
+      }
+      
+      console.log(item_list)
+      
+      
+      if (item_list != '' && return_item_list.length == 0) {
+        alert('반품할 상품 수량을 확인하세요.');
+      }
+      
+      const formData = new FormData();
+      
+      formData.append('orderNo', item_list[0].order.orderNo);
+      formData.append('date', date);
+      formData.append('user_id', user_id);
+      formData.append('return_promise', return_promise);
+      
+      for (let idx in item_list) {
+        formData.append('items[' + idx + ']', item_list[idx].item.itemNo);
+        formData.append('quantitys[' + idx + ']', item_list[idx].quantity);
+      }
+      
+      fetch('/return/fetch-add', {
+        method: 'post',
+        body: formData
+      })
+          .then(res => {
+            res.json();
+            if (res.ok) {
+              location.reload();
+            }
+          })
+    }
+  
+  </script>
+  <div class="modal">
+    <div class="modal-tab">
+      <span class="modal-window-title" th:if="${tab.equals('반품 접수 - ')}"
+            th:text="|${tab} ${session.user != null ? buyerName : '관리자 모드'}|">
+        <span>(접수완료)</span>
+      </span>
+      <span class="modal-window-title" th:if="${tab.equals('반품 상세 정보 - ')}"
+            th:text="|${tab} ${serviceName.returnId} (${serviceName.returnStatus == 0 ? '반품접수' : serviceName.returnStatus == 1 ? '반품 진행중':'반품완료'})|" >
+        <span>(접수완료)</span>
+      </span>
+      <button class="btn-close" onclick="modal_close()">X</button>
+    </div>
+    <div class="modal-title-bubble">
+      반품 기본 정보
+    </div>
+    <div class="modal-menu-bubble">
+      <div class="line-first">
+        <span class="guide-text">반품등록일자</span>
+        <span>
+          <!-- Year Dropdown -->
+          <button id="dropdown-year" data-dropdown-toggle="yearDropdown" data-dropdown-trigger="click"
+                  th:disabled="${serviceName != null}"
+                  class="text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            &nbsp;&nbsp;[[${serviceName != null && serviceName.returnRegistDate != null ?
+            #dates.format(serviceName.returnRegistDate,
+            'yyyy') : ''}]]
+
+            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+          </button>
+          
+          <div id="yearDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 text-center" aria-labelledby="dropdown-year">
+            </ul>
+          </div>
+          -
+          <!-- Month Dropdown -->
+          <button id="dropdown-month" data-dropdown-toggle="monthDropdown" data-dropdown-trigger="click"
+                  th:disabled="${serviceName != null}"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            [[${serviceName != null && serviceName.returnRegistDate != null ?
+            #dates.format(serviceName.returnRegistDate,
+            'MM') : ''}]]
+            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+          </button>
+          
+          <div id="monthDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-month">
+            </ul>
+          </div>
+          -
+          <!-- Day Dropdown -->
+          <button id="dropdown-day" data-dropdown-toggle="dayDropdown" data-dropdown-trigger="click"
+                  th:disabled="${serviceName != null}"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            [[${serviceName != null && serviceName.returnRegistDate != null ?
+            #dates.format(serviceName.returnRegistDate,
+            'dd') : ''}]]
+            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+          </button>
+          
+          <div id="dayDropdown"
+               class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-day"
+                style="max-height: 400px; overflow: auto">
+            </ul>
+          </div>
+        </span>
+        <span class="guide-text ml-3" th:if="${serviceName == null}">발주번호(연계)</span>
+        <span>
+          <input type="text" readonly data-modal-target="medium-modal" data-modal-toggle="medium-modal"
+                 onclick="fetch_orderList ()" th:if="${serviceName == null}"
+                 class="modal-search-bubble-1 w-full md:w-auto focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <input type="text" class="order-input" style="display: inline-block; width: 165px; border-radius: 5px;"
+                 th:if="${serviceName == null}"
+                 readonly>
+        </span>
+      </div>
+      <div class="line-second">
+        <span class="guide-text">담당자</span>
+        <span>
+          <input type="text" readonly data-modal-target="manager-modal" data-modal-toggle="manager-modal"
+                 onclick="fetch_userList ()" th:disabled="${serviceName != null}"
+                 class="modal-search-bubble-2 w-full md:w-auto focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <input class="manager-input" type="text" style="display: inline-block; width: 165px; border-radius: 5px;"
+                 readonly th:value="${serviceName != null ? serviceName.user.userName : ''}">
+        </span>
+        <span class="guide-text" style="margin-left: 40px">반품사유</span>
+        <span>
+          <input type="text" class="return_promise" style="width: 407px; border-radius: 5px"
+                 th:readonly="${serviceName != null}" th:value="${serviceName != null ? serviceName.returnReason : ''}">
+        </span>
+      </div>
+    </div>
+    <div class="modal-title-bubble">
+      상품 리스트
+    </div>
+    <div class="modal-information">
+      <button type="button" class="functional-btn" th:if="${serviceName == null}"
+              onclick="submit_event()"
+              style="background: #81CD28; width: 61px; height: 31px; border-radius: 10px; font-size: 12px"
+              >
+        저장
+      </button>
+      
+      <button type="button" class="functional-btn" th:if="${serviceName != null && session.admin != null}"
+              th:onclick="|location.href='@{/return/accept/{returnId}/accept(returnId=${serviceName.returnId})}'|"
+              style="background: #81CD28; width: 61px; height: 31px; border-radius: 10px; font-size: 12px"
+      >
+        반품 승인
+      </button>
+      
+      <button type="button" onclick="fetch_item_list ()" th:if="${serviceName == null}"
+              style="background: #fff; width: 120px; height: 31px; border-radius: 10px; font-size: 12px;
+              border: 1px solid lightgray">
+        발주 상품 일괄 등록
+      </button>
+      <span style="float: right; margin-right: 55px;">
+        <span style="font-weight: bold; font-size: 14px" th:if="${serviceName != null}">마지막 업데이트 일자 : </span>
+        <span style="font-size: 12px" th:if="${serviceName != null}"
+              th:text="${serviceName != null && serviceName.returnStatusUpdateDate != null ? serviceName.returnStatusUpdateDate : serviceName.returnRegistDate}">2024년
+          10월 08일 12시
+          49분</span>
+      </span>
+    </div>
+    <div class="modal-table">
+      <div class="relative overflow-y-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-3">
+              상품번호
+            </th>
+            <th scope="col" class="px-6 py-3">
+              상품명
+            </th>
+            <th scope="col" class="px-6 py-3">
+              상품 수량
+            </th>
+            <th scope="col" class="px-6 py-3" th:if="${!tab.equals('반품 접수 - ')}">
+              입고 창고
+            </th>
+          </tr>
+          </thead>
+          
+          <tbody class="modal-item-table">
+            <tr class="bg-white dark:bg-gray-800" th:if="${items != null}" th:each="item: ${items}">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" th:text="${item.item.itemNo}">
+              </th>
+              <td class="px-6 py-4" th:text="${item.item.itemName}">
+              </td>
+              <td class="px-6 py-4" th:text="${item.returnItemQty}">
+              </td>
+              <td class="px-6 py-4">
+                반품 센터
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- sub-modal - 담당자 검색 -->
+  <div id="manager-modal" tabindex="-1"
+       class="hidden manager-modal fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-lg max-h-full">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700" style="border-radius: 25px !important;">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 modal-tab">
+          <h3 class="text-xl text-gray-900 dark:text-white text-white font-bold">
+            담당자 검색
+          </h3>
+          <button type="button"
+                  class="manager-btn-close text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="manager-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="sub-modal-search" style="margin-top: -25px; margin-bottom: 25px;">
+          <div class="modal-title-bubble">담당자 이름</div>
+          <input type="text" name="order_no" class="order-no-input">
+        </div>
+        <div class="relative overflow-y-auto" style="max-height: 250px">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="px-6 py-3 rounded-s-lg">
+                관리자 ID
+              </th>
+              <th scope="col" class="px-6 py-3">
+                이름
+              </th>
+            </tr>
+            </thead>
+            <tbody class="modal-user-list">
+            
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- sub-modal - 발주번호 검색 -->
+  <div id="medium-modal" tabindex="-1"
+       class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-lg max-h-full">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700" style="border-radius: 25px !important;">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 modal-tab">
+          <h3 class="text-xl text-gray-900 dark:text-white text-white font-bold">
+            발주번호 검색(연계)
+          </h3>
+          <button type="button"
+                  class="medium-modal-close text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="medium-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="sub-modal-search" style="margin-top: -25px; margin-bottom: 25px;">
+          <div class="modal-title-bubble">발주번호조회</div>
+          <input type="text" name="order_no" class="order-no-input">
+        </div>
+        <div class="relative overflow-y-auto" style="max-height: 250px">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 text-center">
+            <tr>
+              <th scope="col" class="px-6 py-3 rounded-s-lg">
+                발주 번호
+              </th>
+              <th scope="col" class="px-6 py-3">
+                발주 일자
+              </th>
+              <th scope="col" class="px-6 py-3 rounded-e-lg">
+                출고 일자
+              </th>
+            </tr>
+            </thead>
+            <tbody class="modal-order-table">
+            
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  

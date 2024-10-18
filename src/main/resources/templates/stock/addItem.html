@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	.breadcrumb {
+    width: 50%;
+    height: 40px;
+	}
+		
+	.content-1 {
+		position : relative;
+    background-color: #fff;
+    width: 70%;
+    min-height: 690px;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 auto;
+    font-size: 30px;
+   }
+   
+   .left {
+			text-align: left;
+			margin: 50px 300px;
+		}
+   
+   .input {
+			display: block;
+			margin-top : 10px;
+			margin-bottom: 30px;
+			border: none;
+			width: 500px;
+			height: 50px;
+			background-color: #D9D9D9;
+		}
+ 	
+		.input:focus {
+				width: 500px;
+				height: 50px;
+				background-color: #FFF;
+		}
+		
+		input {
+			background-color: #D9D9D9;
+		}
+		
+		.modalBackground {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.5);
+				z-index: 999;
+			}
+	
+			.modal {
+				display: none;
+				position : fixed;
+				top : 50%;
+				left : 50%;
+				transform : translate(-50%, -50%);
+				width: 600px;
+				height: 600px;
+				background-color: #FFF;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				z-index: 1000;
+			}
+			
+			.modalContent {
+				margin: 20px;
+				min-height : 520px;
+				position: relative;
+				top: 40px;
+				text-align: center;
+			}
+			
+			.modalContent ul > li {
+				margin : 10px auto;
+				font-size: 22px;
+				font-weight: bold;
+			}
+			
+			.modalContent table {
+				margin : 10px auto;
+				font-size: 22px;
+			}
+			
+			.modalContent table td,th {
+				padding : 0 20px;
+			}
+			
+			.modalContent .tableHover {
+				cursor: pointer;
+			}
+			
+			.modalContent .tableHover:hover {
+				font-weight: bold;
+			}
+			
+			img.closeButton {
+				width: 40px;
+				height: 40px;
+				border: none;
+			}
+			
+			.closeModal {
+				position: absolute;
+				right : 0;
+				top : 0;
+			}
+			
+			.modalInput {
+				width: 400px;
+				height: 40px;
+				background-color: #D9D9D9;
+			}
+			
+			.modalButton {
+	    	background-color: #81CD28;
+	      width: 100px;
+	      height: 40px;
+	      border-radius: 10px;
+	      color: #fff;
+	      font-size : 15px;
+	      font-weight: bold;
+	      margin: .7% .5%;
+	    }
+	    
+	    .pagination {
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+	  	transform: translateX(-50%);
+		}
+		
+		.bold {
+    	font-weight: bold !important;
+    }
+    
+    .ingredient {
+    	text-align: left;
+    	display: flex;
+    	margin-left: 40px;
+    }
+    
+    .half {
+    	width: 35%;
+    	margin: 0 30px;
+    }
+    
+    .halfInput {
+			display: block;
+			margin-top : 10px;
+			margin-bottom: 30px;
+			border: none;
+			width: 300px;
+			height: 50px;
+		}
+		
+		.ingredientButton {
+			position: relative;
+			margin-top : 45px;
+		}
+		
+		.ingredientButton button {
+			height:50px;
+			margin-top : 10px;
+			margin-bottom: 30px;	
+			display: block;	
+			border: none;
+		}
+		
+		.ingredientButton button:focus {
+			border: none;
+			outline:none;
+		}
+		
+		.ingredientButton img {
+			height: 50px;
+			width: 50px;
+		}
+		
+		.button {
+	    	background-color: #81CD28;
+	      width: 150px;
+	      height: 45px;
+	      border-radius: 10px;
+	      color: #fff;
+	      font-size : 22px;
+	      font-weight: bold;
+	      margin: 50px .5%;
+	    }
+	    
+	    .lime {
+	    	background-color: #81CD28;
+	    	position: relative;
+	    	left: 250px;
+	    }
+	    
+	    .gray {
+	    	background-color: #D9D9D9;
+	    	color:#000;
+	    	position: relative;
+	    	right: 250px;
+	    }
+</style>
+</head>
+<body>
+	<div id="header-controller" style="width: 310px; float: left;">
+		  <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+	</div>
+	<div id="content">
+		<div id="content_wrap">
+			<div class="breadcrumb">
+				<a href="/main">
+					<img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+				</a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+				<a href="/stock">
+					<span style="color: #ababab; font-weight: bold;">재고 관리</span>
+				</a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+	      <span style="font-weight: bold;">생산품 등록</span>
+	    </div>
+	    <div class="content-1">
+	    	<form action="/stock/addItem" method="post" autocomplete="off">
+	    		<div class="left">
+	    			<label>상품명</label>
+	    			<input required="required" onclick="openItemModal()" class="input" id="item" >
+	    			<input hidden="" name="itemNo" id="itemHidden">
+	    		</div>
+	    		<div class="left">
+	    			<label>창고</label>
+	    			<input required="required" onclick="openStorageModal()" class="input" id="storage" >
+	    			<input hidden="" name="storageNo" id="storageHidden">
+	    		</div>
+	    		<div class="left">
+	    			<label>상품 수량</label>
+	    			<input type="number" name="quantity" id="quantity" class="input" onkeyup="onlyNumber(this)" required="required">
+	    		</div>
+	    		<div class="ingredient">
+	    			<div id="itemInput" class="half">
+		    			<label>재료</label>
+		    			<input type="text" name="" class="halfInput stock" onclick="openStockModal(this)" data-value="0" id="stock-0"  required="required">
+		    			<input hidden="" name="ingredient" data-value="0" id="stockHidden-0" >
+	    			</div>
+	    			<div id="quantityInput" class="half">
+		    			<label>재료 수량</label>
+		    			<input type="number" name="ingredientQuantity" class="halfInput" onkeyup="onlyNumber(this)" data-value="0" required="required">
+	    			</div>
+	    			<div id="button" class="ingredientButton">
+		    			<button onclick="addInput()" type="button">
+		    				<img alt="+" src="/img/icon/plus-button.png">
+		    			</button>
+	    			</div>
+	    		</div>
+	    		<button type="button" class="button gray" onclick="location.href='/stock'">취소</button>
+		    	<button type="submit" class="button lime">등록 완료</button>
+	    	</form>
+	  	</div>
+	  	<div class="modal" id="itemModal">
+	  		<button type="button" onclick="closeModal()" class="closeModal">
+	    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+	    	</button>
+	    	<div class="modalContent" id="itemModalContent">
+	    	</div>
+	  	</div>
+	  	<div class="modal" id="storageModal">
+		  	<button type="button" onclick="closeModal()" class="closeModal">
+	    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+	    	</button>
+	    	<div class="modalContent" id="storageModalContent">
+	    	</div>
+	  	</div>
+	  	<div class="modalBackground" id="modalBackground">
+	  	</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		let itemModal = document.getElementById('itemModal');
+		let storageModal = document.getElementById('storageModal');
+		let modalBackground = document.getElementById('modalBackground');
+		let count = 0;
+		let selectedInputCount;
+		
+		function onlyNumber(element) {
+			if(element.value.indexOf('.') > 0) {
+				element.setCustomValidity('정수만 입력해주세요');
+			} else {
+				element.setCustomValidity('');
+			}
+		}
+		
+		function openItemModal() {
+			itemModal.style.display = 'block';
+			storageModal.style.display = 'none';
+			modalBackground.style.display = 'block';
+			loadItem('',1);
+			document.activeElement.blur()
+		}
+		
+		function openStockModal(element) {
+			itemModal.style.display = 'block';
+			storageModal.style.display = 'none';
+			modalBackground.style.display = 'block';
+			loadStock('',1);
+			selectedInputCount = element.getAttribute('data-value');
+			document.activeElement.blur()
+		}
+		
+		function openStorageModal() {
+			itemModal.style.display = 'none';
+			storageModal.style.display = 'block';
+			modalBackground.style.display = 'block';
+			loadStorage('', 1);
+			document.activeElement.blur()
+		}
+		
+		function closeModal() {
+			itemModal.style.display = 'none';
+			storageModal.style.display = 'none';
+			modalBackground.style.display = 'none';
+		}
+		
+		function loadItem(search, page) {
+			
+			fetch(`/stock/addItem/item?search=${search}&page=${page}`)
+				.then(response => response.text())
+				.then(html => {
+					document.getElementById('itemModalContent').innerHTML = html;	
+			})
+				.catch(error => {
+					console.error('Error', error);
+				})
+			
+			itemModal.style.display = 'block';
+			modalBackground.style.display = 'block';
+			storageModal.style.display = 'none';
+		}
+		
+		function loadStock(search, page) {
+			
+			fetch(`/stock/addItem/stock?search=${search}&page=${page}`)
+				.then(response => response.text())
+				.then(html => {
+					document.getElementById('itemModalContent').innerHTML = html;	
+			})
+				.catch(error => {
+					console.error('Error', error);
+				})
+			
+			itemModal.style.display = 'block';
+			modalBackground.style.display = 'block';
+			storageModal.style.display = 'none';
+		}
+		
+		
+		function loadStorage(search, page) {
+			
+			fetch(`/stock/add/storage?search=${search}&page=${page}`)
+				.then(response => response.text())
+				.then(html => {
+					document.getElementById('storageModalContent').innerHTML = html;	
+			})
+				.catch(error => {
+					console.error('Error', error);
+				})
+			
+			itemModal.style.display = 'none';
+			modalBackground.style.display = 'block';
+			storageModal.style.display = 'block';
+		}
+		
+		function itemSubmit(event) {
+			
+			event.preventDefault();
+			
+			let itemModalSearch = document.getElementById('itemModalSearch').value;
+			let page= 1;
+			
+			loadItem(itemModalSearch,page);
+		}
+		
+		function stockSubmit(event) {
+			
+			event.preventDefault();
+			
+			let itemModalSearch = document.getElementById('itemModalSearch').value;
+			let page= 1;
+			
+			loadStock(itemModalSearch,page);
+		}
+		
+		function storageSubmit(event) {
+			
+			event.preventDefault();
+			
+			let storageModalSearch = document.getElementById('storageModalSearch').value;
+			let page= 1;
+			
+			loadStorage(storageModalSearch,page);
+		}
+		
+		function chooseItem(element) {
+			let itemName = element.textContent;
+			let itemNo = element.getAttribute('data-value');
+			
+			document.getElementById('item').value = itemName;
+			document.getElementById('itemHidden').value = itemNo;
+			closeModal();
+		}
+		
+		function chooseStock(element) {
+			let itemName = element.textContent;
+			let itemNo = element.getAttribute('data-value');
+			
+			document.getElementById(`stock-${selectedInputCount}`).value = itemName;
+			document.getElementById(`stockHidden-${selectedInputCount}`).value = itemNo;
+			
+			noRepetition(document.getElementById(`stock-${selectedInputCount}`));
+			
+			closeModal();
+		}
+		
+		function chooseStorage(element) {
+			let storageName = element.textContent;
+			let storageNo = element.getAttribute('data-value');
+			
+			document.getElementById('storage').value = storageName;
+			document.getElementById('storageHidden').value = storageNo;
+			closeModal();
+		}
+		
+		function changeItemPage(element) {
+			let search= document.getElementById('itemModalSearch').value;
+			let page = element.getAttribute('data-value');
+			
+			loadItem(search,page);
+		}
+		
+		function changeStockPage(element) {
+			let search= document.getElementById('itemModalSearch').value;
+			let page = element.getAttribute('data-value');
+			
+			loadStock(search,page);
+		}
+		
+		function changeStoragePage(element) {
+			let search= document.getElementById('storageModalSearch').value;
+			let page = element.getAttribute('data-value');
+			
+			loadStorage(search,page);
+		}
+		
+		function addInput () {
+			count++;
+			console.log(count);
+			
+			let newInput = document.createElement('input');
+			newInput.setAttribute('id',`stock-${count}`);
+			newInput.setAttribute('class','halfInput stock');
+			newInput.setAttribute('onclick','openStockModal(this)');
+			newInput.setAttribute('data-value',count);
+			newInput.setAttribute('required','required');
+			
+			let newInputHidden = document.createElement('input');
+			newInputHidden.setAttribute('hidden','');
+			newInputHidden.setAttribute('name','ingredient');
+			newInputHidden.setAttribute('data-value',count);
+			newInputHidden.setAttribute('id',`stockHidden-${count}`);
+			
+			let newQuantity = document.createElement('input');
+			newQuantity.setAttribute('name','ingredientQuantity');
+			newQuantity.setAttribute('class','halfInput');
+			newQuantity.setAttribute('onkeyup','onlyNumber(this)');
+			newQuantity.setAttribute('data-value',count);
+			newQuantity.setAttribute('type','number');
+			newQuantity.setAttribute('required','required');
+			
+			let newButton = document.createElement('button');
+			newButton.setAttribute('type','button');
+			newButton.setAttribute('data-value',count);
+			newButton.setAttribute('onclick','removeInput(this)');
+			newButton.innerHTML = '<img alt="x" src="/img/icon/closebutton.png">';
+			
+			document.getElementById('itemInput').append(newInput,newInputHidden);
+			document.getElementById('quantityInput').append(newQuantity);
+			document.getElementById('button').append(newButton);
+			
+		}
+		
+		function removeInput(element) {
+			selectedInputCount = element.getAttribute('data-value');
+			
+			let remove = document.querySelectorAll(`[data-value="${selectedInputCount}"]`);
+			
+			remove.forEach( e => {
+				e.remove();
+			});
+			
+		}
+		
+		function noRepetition (element) {
+			let thisValue = element.value;
+			let ingredients = document.querySelectorAll('.stock');
+			let repetitionCount = 0;
+			
+			
+			ingredients.forEach ( i => {
+				console.log(i.value);
+				if (i.value == thisValue && i != element) {
+					repetitionCount++;
+				}
+			});
+			
+			console.log(repetitionCount);
+			
+			if(repetitionCount >= 1 ) {
+				window.alert('재료에 중복된 항목이 있습니다.');
+				element.value = '';
+			}
+		}
+		
+	</script> 
+</body>
+</html>

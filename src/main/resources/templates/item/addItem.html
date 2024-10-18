@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+.breadcrumb {
+	width: 50%;
+	height: 40px;
+}
+
+.content-1 {
+	position: relative;
+	background-color: #fff;
+	width: 70%;
+	min-height: 690px;
+	text-align: center;
+	font-weight: bold;
+	margin: 0 auto;
+	font-size: 30px;
+}
+
+.left {
+	text-align: left;
+	margin: 50px 300px;
+}
+
+.input {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	border: none;
+}
+
+input {
+	width: 500px;
+	height: 50px;
+	background-color: #D9D9D9;
+}
+
+.input:focus {
+	width: 500px;
+	height: 50px;
+	background-color: #FFF;
+}
+
+.button {
+	background-color: #81CD28;
+	width: 150px;
+	height: 45px;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 22px;
+	font-weight: bold;
+	margin: .7% .5%;
+}
+
+.lime {
+	background-color: #81CD28;
+	position: absolute;
+	bottom: 30px;
+	right: 50px;
+}
+
+.gray {
+	background-color: #D9D9D9;
+	color: #000;
+	position: absolute;
+	bottom: 30px;
+	left: 50px;
+}
+
+img.closeButton {
+	width: 40px;
+	height: 40px;
+	border: none;
+}
+
+.closeModal {
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.modalInput {
+	width: 400px;
+	height: 40px;
+	background-color: #D9D9D9;
+}
+
+.modalButton {
+	background-color: #81CD28;
+	width: 100px;
+	height: 40px;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 15px;
+	font-weight: bold;
+	margin: .7% .5%;
+}
+
+.pagination {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.bold {
+	font-weight: bold !important;
+}
+
+[type="radio"]:checked {
+  border: 0.4em solid tomato;
+}
+[type="radio"]:hover {
+  box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+  cursor: pointer;
+}
+[type="radio"] {
+  vertical-align: middle;
+  appearance: none;
+  border: max(2px, 0.1em) solid gray;
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+  transition: border 0.5s ease-in-out;
+}
+</style>
+</head>
+<body>
+  <div id="header-controller" style="width: 310px; float: left;">
+		<th:block th:replace="fragments/sidebar :: sidebarFragment" />
+	</div>
+	<div id="content">
+		<div id="content_wrap">
+			<div class="breadcrumb">
+				<a href="/main"> <img src="/img/icon/icon-home-filled.png"
+					alt="" style="display: inline; line-height: 40px;">
+				</a> &nbsp; <span
+					style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+				&nbsp; <a href="/item"> <span
+					style="color: #ababab; font-weight: bold;">상품 관리</span>
+				</a> &nbsp; <span
+					style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+				&nbsp; <span style="font-weight: bold;">상품 등록</span>
+			</div>
+			<div class="content-1">
+				<form action="/item/add" method="post" autocomplete="off">
+					<div class="left">
+						<label>상품명</label> <input type="text" class="input"
+							placeholder="상품명을 입력해주세요..." required="required" id="itemName" name="itemName">
+					</div>
+					<div class="left">
+						<label>단가</label> <input type="number" min="1" class="input"
+							id="itemPrice" name="itemPrice">
+					</div>
+					<div class="left">
+						<label>사진</label> <input type="text" id="test" hidden="" name="itemImage"><input type="file" accept="/image/*" id="itemImage" onchange="addImage()">
+					</div>
+					<div class="left">
+						<label>분류</label> <input type="radio" name="isMaterial" value="0">상품
+						<input type="radio" name="isMaterial" value="1">재료
+					</div>
+					<button type="button" class="button gray"
+						onclick="location.href='/item'">취소</button>
+					<button type="submit" class="button lime">상품 등록</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		let itemPrice = document.getElementById('itemPrice');
+
+		function onlyNumber() {
+			if (itemPrice.value.indexOf('.') > 0) {
+				itemPrice.setCustomValidity('정수만 입력해주세요');
+			} else {
+				itemPrice.setCustomValidity('');
+			}
+		}
+		
+		function addImage() {
+			const test = document.getElementById('test');
+			const image = document.getElementById('itemImage').files[0];
+			const formData = new FormData();
+			formData.append("image", image);
+			fetch("/amazon/uploader", {
+				method :"post",
+				body : formData,
+				headers : {Accept:"application/json"}
+			}).then(res=>res.text()).then(data=>{
+				test.value=data;
+			})
+		}
+
+		itemPrice.onkeyup = onlyNumber;
+		itemPrice.onchage = onlyNumber;
+	</script>
+</body>
+</html>

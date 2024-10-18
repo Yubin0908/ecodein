@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script
+	src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+<style type="text/css">
+.breadcrumb {
+	width: 50%;
+	height: 40px;
+}
+
+.menu-header {
+	width: 100%;
+	height: 70px;
+	background-color: #fff;
+	border-radius: 15px;
+}
+
+.lime {
+	background-color: #81CD28;
+	width: 100px;
+	height: 45px;
+	border-radius: 10px;
+	color: #fff;
+	font-weight: bold;
+	margin: .7% .5%
+}
+
+.red {
+	background-color: #81CD28;
+	width: 100px;
+	height: 45px;
+	border-radius: 10px;
+	color: red;
+	font-weight: bold;
+	margin: .7% .5%;
+	position: absolute;
+	right: 140px;
+	bottom: 20px;
+	position: absolute;
+}
+
+.green {
+	background-color: #26973C;
+	width: 100px;
+	height: 45px;
+	border-radius: 10px;
+	color: #fff;
+	font-weight: bold;
+	margin: .7% .5%
+}
+
+.select {
+	border: 1px #000 solid;
+	border-radius: 15px;
+}
+
+.search_input {
+	border-radius: 25px;
+	border: 1px solid gray;
+	padding: 5px;
+	width: 270px;
+	font-size: .9rem;
+	text-align: center;
+	position: absolute;
+	top: 125px;
+	/*left: 74%;*/
+	left: calc(100% - 450px);
+}
+
+.search_btn {
+	padding: 5px 20px;
+	background-color: #81CD28;
+	color: #fff;
+	font-weight: bold;
+	border-radius: 15px;
+	position: absolute;
+	top: 125px;
+	left: calc(100% - 170px);
+}
+
+.content-1 {
+	background-color: #fff;
+	width: 100%;
+	min-height: 690px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.7rem;
+	position: relative;
+}
+
+.content-1>table {
+	margin-top: 15px;
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: collapse;
+}
+
+thead {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	font-size: 1rem;
+}
+
+thead th {
+	padding: 10px 0;
+}
+
+.content-1 tbody tr {
+	font-weight: normal;
+	font-size: 1rem;
+	line-height: 3rem;
+}
+
+.content-1 tbody tr:nth-of-type(even) {
+	background-color: #E6F5D4;
+}
+
+.pagination {
+	position: relative;
+	bottom: 0;
+	left: 0;
+}
+
+.pagination button {
+	font-weight: normal;
+	font-size: 1.1rem;
+}
+
+.bold {
+	font-weight: bold !important;
+}
+
+.item {
+	cursor: pointer;
+}
+
+.item:hover {
+	font-weight: bold;
+}
+
+.modalBackground {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 600px;
+	height: 750px;
+	background-color: #FFF;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+	font-size: 20px;
+	font-weight: bolder;
+}
+
+.modalContent {
+	margin: 20px;
+	position: relative;
+	top: 40px;
+}
+
+.pagination {
+	position: absolute;
+	bottom: 50px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.modal img {
+	width: 400px;
+	height: 400px;
+	display: inline-block;
+	border: 2px solid #000;
+}
+
+.noFocus:focus {
+	outline: none;
+}
+
+img.closeButton {
+	width: 40px;
+	height: 40px;
+	border: none;
+}
+
+.closeModal {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+
+.modalButton {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+}
+
+.input {
+	width: 400px;
+	height: 30px;
+	background-color: #D9D9D9;
+}
+
+.input:focus {
+	width: 400px;
+	height: 30px;
+	background-color: #FFF;
+}
+
+.right {
+	position: relative;
+	left: 1350px;
+}
+</style>
+</head>
+<body>
+	<script th:if="${session.admin == null}">
+		alert('인가된 권한이 없습니다. 관리자에게 문의하세요.');
+		history.back();
+	</script>
+  <div id="header-controller" style="width: 310px; float: left;">
+	  <th:block th:replace="fragments/sidebar :: sidebarFragment" />
+  </div>
+	<div id="content">
+		<div id="content_wrap">
+			<div class="breadcrumb">
+				<a href="/main"> <img src="/img/icon/icon-home-filled.png"
+					alt="" style="display: inline; line-height: 40px;">
+				</a> &nbsp; <span
+					style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+				&nbsp; <a href="/item"> <span
+					style="color: #ababab; font-weight: bold;">상품 관리</span>
+				</a> &nbsp; <span
+					style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+				&nbsp; <span style="font-weight: bold;">상품 리스트</span>
+			</div>
+			<div class="menu-header">
+				<form method="get" action="/item">
+					<button type="button" class="lime"
+						onclick="location.href='/item/add'">상품 등록</button>
+					&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+					&nbsp; <span>상품만 보기</span> <input name="is_item" type="checkbox"
+						th:checked="${is_item}" onchange="this.form.submit()" id="is_item">
+					<input type="text" placeholder="상품 번호, 상품명을 입력하세요."
+						class="search_input" name="search" th:value="${search}"
+						id="search"> <input type="submit" class="search_btn"
+						value="조 회">
+				</form>
+			</div>
+			<div class="content-1">
+				<table>
+					<thead>
+						<tr>
+							<th>상품 번호</th>
+							<th>상품명</th>
+							<th>단가</th>
+							<th>분류</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item:${items}">
+							<td th:text="${item.itemNo}"></td>
+							<td th:data-value="${item.itemNo}" th:text="${item.itemName}"
+								onclick="openModal(this)" class="item"></td>
+							<td th:text="${item.itemPrice}"></td>
+							<td th:text="${item.isMaterial}?'재료':'상품'"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div id="pagination" class="pagination">
+					<button th:value="${1}" onclick="changePage(this);" type="button"><<</button>
+					<button type="button" onclick="changePage(this);"
+						th:disabled="${items.first}" th:value="${paging.currentPage - 1}">이전</button>
+					<span
+						th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+						<button type="button" th:value="${page}" th:text="${page}"
+							th:disabled="${paging.currentPage eq page}"
+							th:classappend="${paging.currentPage eq page} ? 'bold disabled' : ''"
+							onclick="changePage(this);"></button>
+					</span>
+					<button type="button" onclick="changePage(this);"
+						th:disabled="${items.last}" th:value="${paging.currentPage + 1}">다음</button>
+					<button type="button" th:value="${items.totalPages}" th
+						onclick="changePage(this)">>></button>
+				</div>
+
+				<button th:if="${hasNext}" th:value="${currentPage+1}"
+					onclick="changePage(this)">다음</button>
+			</div>
+			<button type="button" class="green right"
+				onclick="location.href='/stock'">재고 목록</button>
+		</div>
+		<div class="modal" id="modal">
+			<button type="button" onclick="closeModal()" class="closeModal">
+				<img class="closeButton" alt="closeButton"
+					src="/img/icon/closebutton.png">
+			</button>
+			<div class="modalContent">
+				<label>상품번호 : </label> <input id="modal_itemNo" readonly="readonly"
+					class="noFocus">
+			</div>
+			<div class="modalContent">
+				<label>상품명 : </label> <input id="modal_itemName" readonly="readonly"
+					class="noFocus">
+			</div>
+			<div class="modalContent">
+				<label>단가 : </label> <input id="modal_itemPrice" readonly="readonly"
+					class="noFocus">
+			</div>
+			<div class="modalContent">
+				<label>사진 : </label> <img alt="itemImage" src=""
+					id="modal_itemImage">
+			</div>
+			<div class="modalContent">
+				<label>분류 : </label> <input id="modal_isMaterial"
+					readonly="readonly" class="noFocus">
+			</div>
+			<button class="red" type="button" data-modal-toggle="Modal"
+				data-modal-target="Modal">상품 삭제</button>
+			<button class="lime modalButton" type="button"
+				onclick="openModalEdit()">상품 수정</button>
+		</div>
+
+
+		<div class="modal" id="modalEdit">
+			<form action="/item/edit" method="post">
+				<button type="button" onclick="closeModal()" class="closeModal">
+					<img class="closeButton" alt="closeButton"
+						src="/img/icon/closebutton.png">
+				</button>
+				<div class="modalContent">
+					<label>상품번호 : </label> <input id="modalEdit_itemNo"
+						readonly="readonly" class="noFocus" name="itemNo">
+				</div>
+				<div class="modalContent">
+					<label>상품명 : </label> <input id="modalEdit_itemName"
+						class="input" name="itemName">
+				</div>
+				<div class="modalContent">
+					<label>단가 : </label> <input id="modalEdit_itemPrice"
+						class="input" type="number" min="0" name="itemPrice">
+				</div>
+				<div class="modalContent">
+					<label>사진 : </label> <img alt="item_image" src=""
+						id="modalEdit_itemImage">
+				</div>
+				<div class="modalContent">
+					<label>분류 : </label> <input id="modalEdit_isMaterial"
+						readonly="readonly" class="noFocus">
+				</div>
+				<button class="lime modalButton" type="submit">상품 수정</button>
+			</form>
+		</div>
+
+		<div class="modalBackground" id="modalBackground"></div>
+	</div>
+	<!-- Modal -->
+	<div id="Modal" tabindex="-1" style="z-index: 2000"
+		class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+		<div class="relative p-4 w-full max-w-md max-h-full">
+			<div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+				<button type="button"
+					class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+					data-modal-hide="Modal">
+					<svg class="w-3 h-3" aria-hidden="true"
+						xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round"
+							stroke-linejoin="round" stroke-width="2"
+							d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+					<span class="sr-only">Close modal</span>
+				</button>
+				<div class="p-4 md:p-5 text-center">
+					<svg
+						class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+						aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+						viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round"
+							stroke-linejoin="round" stroke-width="2"
+							d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+					<h3
+						class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">삭제하시겠습니까?</h3>
+					<button onclick="clickDel()" data-modal-hide="Modal" type="button"
+						class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+						삭제</button>
+					<button data-modal-hide="Modal" type="button"
+						class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+						취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	let itemNumber;
+	
+	let modal = document.getElementById('modal');
+	let modalBackground = document.getElementById('modalBackground');
+	let modalEdit = document.getElementById('modalEdit');
+	
+	function changePage(element) {
+		let search = document.getElementById('search').value || '';
+		let is_item = document.getElementById('is_item').checked ? 'true' : 'false';
+		let page = element.value
+	
+		window.location.href = `?page=${page}&search=${encodeURIComponent(search)}&is_item=${is_item}`
+	}
+	
+	function openModal(element) {
+		let itemNo = element.getAttribute('data-value');
+		
+		fetch(`/item/${itemNo}`)
+			.then(response => response.json())
+			.then(data => {
+				document.getElementById('modal_itemNo').value = data.itemNo;
+				document.getElementById('modal_itemName').value = data.itemName;
+				document.getElementById('modal_itemPrice').value = data.itemPrice;
+				document.getElementById('modal_itemImage').src = data.itemImage;
+				document.getElementById('modal_isMaterial').value = data.isMaterial?"재료":"상품";
+				itemNumber = data.itemNo;
+			})
+		
+		modal.style.display = 'block';
+		modalBackground.style.display = 'block';
+		modalEdit.style.display = 'none';
+	}
+	
+	function openModalEdit() {
+		document.getElementById('modalEdit_itemNo').value = document.getElementById('modal_itemNo').value;
+		document.getElementById('modalEdit_itemName').value = document.getElementById('modal_itemName').value;
+		document.getElementById('modalEdit_itemPrice').value = document.getElementById('modal_itemPrice').value;
+		document.getElementById('modalEdit_itemImage').src = document.getElementById('modal_itemImage').src;
+		document.getElementById('modalEdit_isMaterial').value = document.getElementById('modal_isMaterial').value;
+		modal.style.display = 'none';
+		modalBackground.style.display = 'block';
+		modalEdit.style.display = 'block';
+		document.getElementById('modalEdit_itemName').focus();
+		document.getElementById('modalEdit_itemPrice').focus();
+	}
+	
+	function closeModal() {
+		modal.style.display = 'none';
+		modalBackground.style.display = 'none';
+		modalEdit.style.display = 'none';
+	}
+	
+	function clickDel() {
+		location.replace(`/item/delete/${itemNumber}`);
+	}
+	
+	</script>
+</body>
+</html>

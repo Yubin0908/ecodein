@@ -1,0 +1,240 @@
+.rotate-45 {
+  --transform-rotate: 45deg;
+  transform: rotate(45deg);
+}
+
+.group:hover .group-hover\:flex {
+  display: flex;
+}
+
+#header {
+  width: 310px;
+  height: 100vh;
+  float: left;
+  position: fixed;
+  background-color: #ffffff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: width 0.4s;
+  top: 0;
+  left: 0;
+  background-attachment: fixed;
+}
+
+#header-top {
+  width: 310px;
+  height: 100vh;
+}
+
+.header, .middle, footer {
+  position: fixed;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  padding: 20px;
+  width: 157px;
+  position: fixed;
+  top: 105px;
+  left: 80px;
+}
+
+.header {
+  background-image: url("../img/layout/logo_white.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 200px;
+  margin-top: -80px;
+  transition: background-size 0.7s;
+}
+
+.hide-arrow {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #d1d5db;
+  border-radius: 50%;
+  position: relative;
+  top: -10px;
+  left: 151px;
+  background-color: #f3f4f6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hide-arrow img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.7s;
+}
+
+.not-visible .hide-arrow {
+  left: 59px;
+  transition: left 0.7s;
+}
+
+.not-visible .hide-arrow img {
+  transform: rotate(180deg);
+}
+
+.not-visible {
+  width: 120px !important;
+}
+
+.active-header {
+  background-image: url("../img/layout/logo_white_toggle.png") !important;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 120px !important;
+  margin-top: -110px !important;
+  transition: background-size 0.5s;
+  left: -20px;
+}
+
+.middle {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  top: 170px;
+}
+
+.menu {
+  margin-bottom: 30px;
+}
+
+.menu:hover {
+  background-color: lightgray !important;
+  padding: 10px 30px;
+  border-radius: 15px;
+  transition: background-color 0.5s, padding 0.8s;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+.menu > img {
+  width: 30px;
+  display: inline-block;
+}
+
+.menu > .text {
+  vertical-align: middle;
+  font-size: 1.2rem;
+  margin-left: 25px;
+  letter-spacing: 6px;
+  font-weight: bold;
+}
+
+.middle button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #3B82F6;
+  color: white;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.middle button:hover {
+  background-color: #2563EB;
+}
+
+.deActive {
+  display: none !important;
+  transition: display 0.7s;
+}
+
+.footer {
+  background-color: #000;
+  height: 100px;
+  bottom: -200px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 310px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.footer img:nth-of-type(2) {
+  width: 45px;
+  height: 45px;
+}
+
+.footer div {
+  margin-left: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer span {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.footer span:nth-of-type(2) {
+  font-size: 1.5rem;
+  letter-spacing: 4px;
+}
+
+.active-menu {
+  filter: invert(63%) sepia(4%) saturate(7494%) hue-rotate(45deg) brightness(105%) contrast(93%);
+}
+
+.center-menu {
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  left: 10px;
+}
+
+/* user-menu */
+.detail-menu {
+  width: 310px;
+  height: 100px;
+  border: 1px solid #d1d5db;
+  border-radius: 15px 15px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+  bottom: 0;
+  position: fixed;
+  top: 79vh;
+  z-index: 1;
+  padding: 15px 86px;
+  background-color: white;
+}
+
+.detail-menu > p {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.img-password, .img-admin {
+  width: 30px;
+  display: inline-block;
+}
+
+.header-visible {
+  width: 150px !important;
+  transition: width 0.7s;
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Eco de_In] 메인</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.1/tailwind.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        height: '100%',
+        initialView: 'dayGridMonth',
+        locale: 'ko'
+      });
+      calendar.render();
+    });
+  </script>
+  <style>
+    .main-content {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      height: 70%;
+    }
+    
+    .content-0, .content-1 {
+      background-color: #ffffff;
+      width: 49%;
+      height: 600px;
+      border-radius: 12px;
+      padding: 20px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    #calendar {
+      position: relative;
+      z-index: 0;
+      line-height: 1.6;
+    }
+    
+    #calendar > .calendar-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4b5563;
+    }
+    
+    .content-1 {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.6rem;
+      color: #374151;
+    }
+    
+    .content-1 > table {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background-color: #f9fafb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    thead th {
+      padding: 12px 8px;
+      font-size: 0.875rem;
+      text-align: center;
+      color: #6b7280;
+    }
+    
+    .content-1 tbody tr {
+      font-size: 0.875rem;
+      line-height: 2.75rem;
+    }
+    
+    .content-1 tbody tr:nth-of-type(even) {
+      background-color: #f1f5f9;
+    }
+    
+    .content-2 {
+      width: 100%;
+      background-color: #ffffff;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .content-2 > p {
+      text-align: left;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #374151;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <th:block th:if="${auth_message != null}">
+    <script>
+      alert([[${auth_message}]]);
+    </script>
+  </th:block>
+  <div id="header-controller" style="width: 310px; float: left;">
+    <th:block th:replace="~{fragments/sidebar :: sidebarFragment}"/>
+  </div>
+  <div id="content">
+    <div id="content_wrap">
+      <div class="main-content">
+        <div class="content-0">
+          <div id="calendar">
+          </div>
+        </div>
+        <div class="content-1">
+          <p class="content-title">진행중인 발주</p>
+          <table>
+            <thead>
+              <tr>
+                <th>발주번호</th>
+                <th>납기일자</th>
+                <th>출고상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${state.count <= 10}" th:each="order, state: ${orders}">
+                <td th:text="${order.orderNo}">1</td>
+                <td th:text="${order.orderDate}">2024-09-15</td>
+                <td th:text="${order.isDelivery == 0 ? '진행중':'완료'}">진행중</td>
+              </tr>
+            <tr th:if="${orders.isEmpty()}">
+              <td colspan="3">진행중인 발주 내역이 존재하지 않습니다.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="content-2">
+        <p>QnA</p>
+        <p th:text="${boards}"></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

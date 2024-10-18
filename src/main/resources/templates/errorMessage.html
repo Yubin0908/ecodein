@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<!--  에러 메시지를 사용자에게 alert 시키고 원하는 url로 리다이렉트 시키는 페이지입니다. -->
+<body>
+  <script type="text/javascript" th:inline="javascript">
+    window.alert(/*[[${message}]]*/);
+    location.href = window.location.origin + /*[[${url}]]*/;
+  </script>
+</body>
+</html>

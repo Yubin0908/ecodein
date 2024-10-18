@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>거래처 관리</title>
+  <link rel="stylesheet" href="/css/default-style.css">
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<!-- api script -->
+	<script>
+		function simple4_execDaumPostcode() {
+			document.getElementById('sample4_postcode').value = null;
+      document.getElementById("sample4_roadAddress").value = null;
+      document.getElementById("sample4_jibunAddress").value = null;
+			
+			new daum.Postcode({
+				oncomplete: function (data) {
+				const roadAddr = data.roadAddress;
+				var extraRoadAddr = '';
+				var expJibunAddr = data.autoRoadAddress + extraRoadAddr;
+				
+				if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+        	extraRoadAddr += data.bname;
+        }
+				
+				if(data.buildingName !== '' && data.apartment === 'Y'){
+        	extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+        }
+				
+				if(extraRoadAddr !== ''){
+        	extraRoadAddr = ' (' + extraRoadAddr + ')';
+        }
+				
+				if(data.autoRoadAddress) {
+        	var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+        } else if(data.autoJibunAddress) {
+        	expJibunAddr = data.autoJibunAddress;
+				}
+				document.getElementById('sample4_postcode').value = data.zonecode;
+        document.getElementById("sample4_roadAddress").value = roadAddr;
+        document.getElementById("sample4_jibunAddress").value = expJibunAddr;
+				
+			}
+		}).open();
+		};
+	</script>
+  <style>
+    .breadcrumb {
+      width: 50%;
+      height: 40px;
+    }
+    
+    .menu-header {
+      width: 100%;
+      height: 70px;
+      background-color: #fff;
+      border-radius: 15px;
+			position: relative;
+    }
+    
+    .menu-header .add-btn {
+      background-color: #81CD28;
+      width: 100px;
+      height: 45px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: bold;
+      margin: .7% .5%
+    }
+    
+    .none-data-search {
+      font-weight: bold;
+      margin-left: 100px;
+    }
+    
+    #dropdownDefaultButton {
+      border: 1px solid gray;
+      border-radius: 25px;
+      padding: 5px 15px;
+    }
+    
+    #dropdown {
+      position: relative;
+      width: 60px !important;
+      top: -19px;
+      left: 375px;
+    }
+    
+    .search_input {
+      border-radius: 25px;
+      border: 1px solid gray;
+      padding: 5px;
+      width: 270px;
+      font-size: .9rem;
+      text-align: center;
+      position: absolute;
+			top: 20px;
+      left: calc(100% - 450px);
+    }
+    
+    .search_btn {
+      padding: 5px 20px;
+      background-color: #81CD28;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 15px;
+      position: absolute;
+      top: 20px;
+      left: calc(100% - 170px);
+    }
+    
+    .content-1 {
+      background-color: #fff;
+      width: 100%;
+      min-height: 690px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.7rem;
+    }
+		
+		.disable-bg {
+			width: 100%;
+			height: 100%;
+			background-color: rgba(200, 200, 200, .4);
+			position: absolute;
+			top: 0;
+			border-radius: 15px;
+		}
+		
+		.disable-bg > span {
+			display: block;
+			text-align: center;
+			line-height: 70px;
+			font-weight: bold;
+		}
+		
+		table {
+			width: 80%;
+			margin: 12% 10%;
+			line-height: 50px;
+			font-size: 16px;
+			text-align: right;
+		}
+		
+		.required {
+			color: red;
+		}
+		
+		td.input {
+			text-align: center;
+		}
+		
+		.content-1 input {
+			border: 1px solid gray;
+			border-radius: 25px;
+			height: 35px;
+			align-items: center;
+			text-align: center;
+		}
+		
+		input[type="reset"], .content-1 input[type="submit"] {
+			border-radius: 15px;
+			width: 100px;
+			height: 50px;
+			font-weight: bold;
+			letter-spacing: 2px;
+			color: #fff;
+		}
+		
+		.address {
+			background-color: #26973C;
+			font-weight: bold;
+			color: #fff;
+			border-radius: 15px;
+			padding: 0 25px;
+			font-size: 18px;
+			height: 35px;
+			line-height: 35px;
+		}
+  </style>
+</head>
+<body>
+	<script th:if="${session.admin == null}">
+			alert('거래처 등록 권한이 없습니다. 관리자에게 문의하세요.');
+			history.back();
+	</script>
+  <div id="header-controller" style="width: 310px; float: left;">
+	  <th:block th:replace="~{fragments/sidebar :: sidebarFragment}"/>
+	</div>
+	<div id="content">
+	  <div id="content_wrap" style="min-width: 1600px;">
+	    <div class="breadcrumb">
+				<a href="/main">
+					<img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+				</a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+				<a href="/buyer/default/1?keyword=">
+					<span style="color: #ababab; font-weight: bold;">거래처 관리</span>
+				</a>
+	      &nbsp;
+	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+	      &nbsp;
+	      <span style="font-weight: bold;">거래처 등록</span>
+	    </div>
+	    <div class="menu-header">
+	      <button type="button" class="add-btn" onclick="location.href='/buyer/add'">거래처 등록</button>
+	      <span class="none-data-search">미사용 거래처 조회</span>
+	      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" 
+								class="relative font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center" type="button">
+								OFF &nbsp;
+					<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+		        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+		      </svg>
+	      </button>
+	      
+	      <!-- Dropdown menu -->
+	      <div id="dropdown" class="relative z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+	        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+	          <li>
+	            <a th:href="@{/buyer/default/1}" 
+								 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+								OFF
+							</a>
+	          </li>
+	          <li>
+	            <a th:href="@{/buyer/all/1}" 
+							class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+								ON
+							</a>
+	          </li>
+	        </ul>
+	      </div>
+	      
+	      <form th:action="@{/buyer/{buyer_status}/1(buyer_status = ${buyerStatus})}", class="inline" method="get">
+	        <input type="text" name="keyword" placeholder="거래처명, 사업자번호를 입력하세요." class="search_input">
+	        <input type="submit" value="조 회" class="search_btn">
+	      </form>
+				<div class="disable-bg">
+					<span>
+						[안내] 거래처 추가 작업 시, 조회 기능을 사용할 수 없습니다.
+					</span>
+				</div>
+	    </div>
+	    <div class="content-1">
+				<form action="/buyer/add" method="post">
+					<table>
+						<tr>
+							<td>
+								<label for="buyer_name">
+									상호명<span class="required">*</span>
+								</label>
+							</td>
+							<td class="input">
+								<input type="text" name="buyerName" id="buyer_name">
+							</td>
+							<td>
+								<label for="buyer_agent">
+									대표자<span class="required">*</span>
+								</label>
+							</td>
+							<td class="input">
+								<input type="text" name="buyerAgent" id="buyer_agent">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="buyer_number">
+									사업자 등록번호<span class="required">*</span>
+								</label>
+							</td>
+							<td class="input">
+								<input type="text" name="buyerNumber" id="buyer_number">
+							</td>
+							<td>
+								<label for="buyer_tel">
+									전화번호<span class="required">*</span>
+								</label>
+							</td>
+							<td class="input">
+								<input type="text" name="buyerTel" id="buyer_tel">
+							</td>
+						</tr>
+						<!-- 주소 검색 API-->
+						<tr>
+							<td><button type="button" class="address" onclick="simple4_execDaumPostcode()">주소 검색</button></td>
+							<td>
+								<input disabled style="width: 200px; position: relative; left: -180px;" 
+												 id="sample4_postcode" name="mpost">
+						  </td>
+							<td colspan="2" style="position: relative; left: -140px; width: 150px;">
+								<input disabled style="width: 108%; margin: 0;" id="sample4_jibunAddress">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<input style="width: 840px; position: relative; left: -95px;" id="sample4_roadAddress" 
+											 name="buyerAddress">
+							</td>
+						</tr>
+						<tr style="position: relative; top: 50px; left: -115px;">
+							<td colspan="2" style="position: absolute; left: 550px;">
+								<input type="reset" value="뒤로가기" 
+											 onclick="history.back()" style="cursor: pointer; border: none; background-color: #ababab;">
+							</td>
+							<td colspan="2" style="position: absolute; right: 300px;">
+								<input type="submit" style="cursor: pointer; background-color: #81CD28; border: none;">
+							</td>
+						</tr>
+					</table>
+				</form>
+	    </div>
+	  </div>
+	</div>
+</body>
+</html>

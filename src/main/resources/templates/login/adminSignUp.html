@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ECO de_IN</title>
+<link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+	<div class="content">
+		<form action="/signup/admin" method="post">
+			<div class="left">
+				<label>이름</label>
+				<input type="text" name="adminName" required="required" class="input" maxlength="20">
+			</div>
+			<div class="left">
+				<label>아이디</label>
+				<input type="text" name="adminId" required="required" class="input" maxlength="50">
+			</div>
+			<div class="left">
+				<label>비밀번호</label>
+				<input type="password" name="adminPassword" required="required" class="input" id="password">
+			</div>
+			<div class="left">
+				<label>비밀번호 확인</label>
+				<input type="password"  required="required" class="input" id="passwordCheck">
+			</div>
+			<button type="button" onclick="location.href='/'" class="confirm no">취소</button>
+			<button type="submit" class="confirm yes">회원가입</button>
+		</form>
+	</div>
+	
+	<script type="text/javascript">
+		let password = document.getElementById('password');
+		let passwordCheck = document.getElementById('passwordCheck');
+		
+		function checkPassword() {
+			if (password.value != passwordCheck.value) {
+				passwordCheck.setCustomValidity('비밀번호가 일치하지 않습니다.');
+			} else {
+				passwordCheck.setCustomValidity('');
+			}
+		}
+		
+		function checkPasswordLength() {
+			if (password.value.length < 4) {
+				password.setCustomValidity('비밀번호는 4글자 이상이어야 합니다.');
+			} else {
+				password.setCustomValidity('');
+			}
+		}
+		
+		password.onchange = checkPassword;
+		password.onkeyup = checkPasswordLength;
+		passwordCheck.onkeyup = checkPassword;
+		
+	</script>
+</body>
+</html>

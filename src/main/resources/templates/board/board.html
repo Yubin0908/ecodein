@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="ko">
+
+<head>
+<meta charset="UTF-8">
+<title>Q&A</title>
+<style>
+.main-content {
+	background-color: #ffffff;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	width: 100%;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+	table-layout: fixed;
+	overflow-wrap: break-word;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: center;
+}
+
+th {
+	background-color: #f3f4f6;
+}
+
+tbody tr {
+	font-weight: normal;
+	font-size: 1rem;
+	line-height: 3rem;
+}
+
+tbody tr:nth-of-type(even) {
+	background-color: #E6F5D4;
+}
+
+.search-group {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-bottom: 10px;
+	position: relative;
+	right: -1000px;
+}
+
+.category-search-box {
+	display: inline-block;
+	width: 400px;
+	line-height: 50px;
+	border-radius: 10px;
+	margin-left: auto;
+}
+
+.button-register {
+	background-color: #81CD28;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+form>input {
+	line-height: 30px;
+	border-radius: 10px;
+	border: 1px solid #888;
+}
+
+
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	padding-left: 0;
+	list-style: none;
+	margin-top: 50px;
+	margin-bottom: 20px;
+}
+
+.page-link {
+	border: 1px solid #ddd;
+	padding: 8px 12px;
+	margin: 0 5px;
+	text-decoration: none;
+	color: #000;
+	border-radius: 5px;
+}
+
+.page-link:hover {
+	background-color: #f1f1f1;
+}
+
+.search_input {
+	border-radius: 25px;
+	border: 1px solid gray;
+	padding: 5px;
+	width: 300px;
+	font-size: .9rem;
+	text-align: center;
+	position: absolute;
+	top: 12px;
+	/*left: 74%;*/
+	left: calc(100% - 450px);
+}
+
+.search_btn {
+	padding: 5px 20px;
+	background-color: #81CD28;
+	color: #fff;
+	font-weight: bold;
+	border-radius: 15px;
+	position: absolute;
+	top: 12px;
+	left: calc(100% - 190px);
+}
+</style>
+</head>
+
+<body>
+  <div id="header-controller" style="width: 310px; float: left;">
+    <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+  </div>
+	<div id="content">
+		<div id="content_wrap">
+			<div class="search-group">
+
+				<!-- searchForm -->
+				<form class="category-search-box" action="/board/board">
+					<input type="text" placeholder="글 번호, 글 제목을 입력하세요."
+						class="search_input" name="search" th:value="${search}"
+						id="search"> <input type="submit" class="search_btn"
+						value="조 회">
+				</form>
+
+
+				<button class="button-register" onclick="location.href='/board/add'">등록</button>
+			</div>
+
+			<div class="main-content">
+				<table>
+					<thead>
+						<tr>
+							<th>글 번호</th>
+							<th>글 제목</th>
+							<th>작성자</th>
+							<th>등록일</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="board : ${ boardList }">
+							<td><a th:text="${board.boardNo}"
+								th:href="@{/board/{boardNo}(boardNo=${board.boardNo})}"></a></td>
+							<td><a th:text="${board.boardTitle}"
+								th:href="@{/board/{boardNo}(boardNo=${board.boardNo})}"></a></td>
+							<td th:text="${board.user.userName}"></td>
+							<td
+								th:text="${#temporals.format(board.boardDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					</tbody>
+				</table>
+
+
+				<div id="paging" class="pagination">
+
+					<!-- 맨 앞으로 이동 -->
+					<button class="page-link"
+						th:onclick="'location.href=\'/board/board?page=' + @{${paging.startPage}} + '\''">
+						<<</button>
+
+					<!-- 이전 페이지로 이동 -->
+					<button class="page-link"
+						th:onclick="'location.href=\'/board/board?page=' + @{${paging.currentPage - 1}} + '\''"
+						th:disabled="${ boardList.first }"><</button>
+
+					<!-- 숫자 버튼 -->
+					<th:block
+						th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
+						<button class="page-link"
+							th:onclick="'location.href=\'/board/board?page=' + @{${page}} + '\''"
+							th:text="${ page }" th:disabled="${ paging.currentPage eq page }">
+						</button>
+					</th:block>
+
+					<!-- 다음 페이지로 이동 -->
+					<button class="page-link"
+						th:onclick="'location.href=\'/board/board?page=' + @{${paging.currentPage + 1}} + '\''"
+						th:disabled="${ boardList.last }">></button>
+
+					<!-- 맨 끝으로 이동 -->
+					<button class="page-link"
+						th:onclick="'location.href=\'/board/board?page=' + @{${paging.endPage}} + '\''">
+						>></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+</body>
+
+</html>
