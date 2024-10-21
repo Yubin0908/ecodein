@@ -3,6 +3,8 @@ package com.project.ecodein.repository;
 import com.project.ecodein.entity.Approval;
 import com.project.ecodein.entity.ApprovalStatusLable;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +29,13 @@ public interface ApprovalStatusLableRepository extends JpaRepository<ApprovalSta
         ":approval_no)", nativeQuery = true)
     void updateApprovalStatus(byte status, String admin_id, Integer approval_no);
 
+    @Query(value = "SELECT a.*, o.status_no, o.update_lable_date, o.status, o.admin_id " +
+            "FROM approval a LEFT JOIN (" +
+            "    SELECT approval_no, status_no, update_lable_date, status, admin_id" +
+            "    FROM (SELECT asl.*, ROW_NUMBER() OVER (PARTITION BY approval_no ORDER BY status DESC) AS rn" +
+            "             FROM approval_status_lable asl) AS ranked" +
+            "    WHERE rn = 1 " +
+            ") AS o ON o.approval_no = a.approval_no " +
+            "WHERE o.status = :status", nativeQuery = true)
+    Page<ApprovalStatusLable> findByStatus(byte status, Pageable pageable);
 }

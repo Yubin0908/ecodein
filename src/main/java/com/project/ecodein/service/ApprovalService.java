@@ -40,13 +40,20 @@ public class ApprovalService {
     }
 
     // 목록 출력
-    public Page<ApprovalDTO> getApprovals(int page) {
+    public Page<ApprovalDTO> getApprovals(int page, Integer keyword) {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "approvalNo");
         Pageable pageable = PageRequest.of(page - 1, 10, sort);
+        Page<Approval> approval = null;
 
-//        return APPROVAL_REPOSITORY.findAll(pageable);
-        Page<Approval> approval = APPROVAL_REPOSITORY.findAll(pageable);
+        if (keyword == null) {
+            approval = APPROVAL_REPOSITORY.findAll(pageable);
+        } else {
+            approval = APPROVAL_REPOSITORY.findByApprovalNo(keyword, pageable);
+        }
+
+
+
         return approval.map(approval1 -> MODEL_MAPPER.map(approval1, ApprovalDTO.class));
     }
 

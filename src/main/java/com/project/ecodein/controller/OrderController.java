@@ -87,12 +87,13 @@ public class OrderController {
     // 발주 등록 페이지_상품 검색 기능
     @GetMapping("/search")
     @ResponseBody
-    public List<StockDTO> searchProducts(@RequestParam(name = "query", required = false) String query, Model model) {
-
+    public StockDTO searchProducts(@RequestParam(name = "query", required = false) String query, Model model) {
+        log.info(query);
         // 검색 로직 수행 (Stock 검색)
-        List<StockDTO> stocks = ORDERING_SERVICE.searchStocksByName(query);
+        StockDTO stock = ORDERING_SERVICE.searchStocksByName(query);
+        log.info(String.valueOf(stock));
         //model.addAttribute("stocks", stocks);
-        return stocks;
+        return stock;
     }
 
     // 발주 등록 페이지_발주 등록 처리

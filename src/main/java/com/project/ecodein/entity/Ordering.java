@@ -36,11 +36,6 @@ public class Ordering {
 	private Date dueDate;
 	
 	@Column(name = "is_delivery", nullable = false)
-	//private Boolean is_delivery;
 	private byte isDelivery;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "order_no", referencedColumnName = "approval_no")
-	private Approval approval;
 
 }

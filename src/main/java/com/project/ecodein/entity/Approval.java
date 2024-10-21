@@ -53,8 +53,5 @@ public class Approval {
     @Column(name = "subject", nullable = true)
     private String subject;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    @JoinColumn(name = "approval_no", referencedColumnName = "order_no")
-    private Ordering ordering;
+
 }

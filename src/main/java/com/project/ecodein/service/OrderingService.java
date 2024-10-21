@@ -2,20 +2,13 @@ package com.project.ecodein.service;
 
 
 
-import com.project.ecodein.dto.*;
-import com.project.ecodein.entity.*;
-import com.project.ecodein.entity.Approval;
-import com.project.ecodein.entity.ApprovalStatusLable;
-import com.project.ecodein.entity.OrderDetail;
-import com.project.ecodein.entity.Ordering;
-import com.project.ecodein.repository.*;
-import jakarta.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import org.modelmapper.ModelMapper;
+import org.springframework.boot.ssl.DefaultSslBundleRegistry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,20 +17,38 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
+import com.project.ecodein.dto.ApprovalStatusLableDTO;
 import com.project.ecodein.dto.OrderPoolDTO;
+import com.project.ecodein.dto.OrderingDTO;
+import com.project.ecodein.dto.StockDTO;
+import com.project.ecodein.entity.Admin;
+import com.project.ecodein.entity.Approval;
+import com.project.ecodein.entity.ApprovalStatusLable;
+import com.project.ecodein.entity.Buyer;
+import com.project.ecodein.entity.Item;
+import com.project.ecodein.entity.OrderDetail;
+import com.project.ecodein.entity.Ordering;
+import com.project.ecodein.entity.Stock;
+import com.project.ecodein.entity.User;
+import com.project.ecodein.repository.AdminRepository;
+import com.project.ecodein.repository.ApprovalRepository;
+import com.project.ecodein.repository.ApprovalStatusLableRepository;
+import com.project.ecodein.repository.ItemRepository;
 import com.project.ecodein.repository.OrderDetailRepository;
 import com.project.ecodein.repository.OrderingRepository;
 import com.project.ecodein.repository.StockRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
 @Service
 public class OrderingService {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
 	private final OrderingRepository ORDERING_REPOSITORY;
     private final StockRepository STOCK_REPOSITORY;
@@ -47,6 +58,7 @@ public class OrderingService {
     private final ModelMapper MODEL_MAPPER;
     private final HttpSession SESSION;
     private final AdminRepository ADMIN_REPOSITORY;
+    private final ItemRepository ITEM_REPOSITORY;
 
     public OrderingService(OrderingRepository orderingRepository,
                            StockRepository stockRepository,
@@ -54,7 +66,8 @@ public class OrderingService {
                            ApprovalRepository approvalRepository,
                            ApprovalStatusLableRepository approvalStatusLableRepository,
                            ModelMapper modelMapper, HttpSession session,
-                           AdminRepository adminRepository) {
+                           AdminRepository adminRepository,
+                           ItemRepository itemRepository, DefaultSslBundleRegistry sslBundleRegistry) {
         this.MODEL_MAPPER = modelMapper;
         this.ORDERING_REPOSITORY = orderingRepository;
         this.STOCK_REPOSITORY = stockRepository;
@@ -63,6 +76,7 @@ public class OrderingService {
         this.APPROVAL_STATUSLABLE_REPOSITORY = approvalStatusLableRepository;
         this.SESSION = session;
         this.ADMIN_REPOSITORY = adminRepository;
+        this.ITEM_REPOSITORY = itemRepository;
     }
 
     // mainPage에서 사용할 메서드
@@ -113,47 +127,49 @@ public class OrderingService {
     // 발주등록
     @Transactional
     public void addOrder(OrderPoolDTO orderPool) {
-        //Ordering ordering = ORDERING_REPOSITORY.addsave(orderPool.getBuyer_code(), orderPool.getUser_id(), orderPool.getDue_date());
-        User user = (User)SESSION.getAttribute("user");
-        Ordering ordering = new Ordering();
-        Approval approval = new Approval();
-        Buyer buyer = new Buyer();
-        buyer.setBuyerCode(user.getBuyerCode().getBuyerCode());
-        approval.setBuyer(user.getBuyerCode());
-        approval.setSubject(null);
-        approval.setApprovalRegistDate(LocalDateTime.now());
-        ordering.setBuyerCode(buyer);
-        ordering.setUserId(new User(orderPool.getUserId()));
-        ordering.setDueDate(orderPool.getDue_date());
-        ordering.setOrderDate(Date.valueOf(LocalDate.now()));
-        approval.setOrdering(ordering);
-        buyer.setBuyerCode((long) orderPool.getBuyerCode());
 
-        ordering.setBuyerCode(buyer);
-        ordering.setUserId(new User(orderPool.getUserId()));
-        ordering.setDueDate(orderPool.getDue_date());
-        ordering.setOrderDate(Date.valueOf(LocalDate.now()));
+        Approval prevApproval = APPROVAL_REPOSITORY.findTopByOrderByApprovalNoDesc();
+        Ordering prevOrder = ORDERING_REPOSITORY.findTopByOrderByOrderNoDesc();
+
+        User user = (User)SESSION.getAttribute("user");
+
+
+        Approval approval = new Approval();
+        Buyer buyer = user.getBuyerCode();
+        Admin admin = ADMIN_REPOSITORY.findByAdminName("자동생성시스템");
+
+        approval.setBuyer(buyer);
+        approval.setApprovalRegistDate(LocalDateTime.now());
+        approval.setAdmin(admin);
+        approval.setSubject(null);
 
         approval = APPROVAL_REPOSITORY.save(approval);
-
-        ordering.setApproval(approval);
-        Ordering order = ORDERING_REPOSITORY.save(ordering);
         autoSaveApprovalStatusble(approval);
+
+        Ordering ordering = new Ordering();
+        ordering.setOrderNo(approval.getApprovalNo());
+        ordering.setBuyerCode(buyer);
+        ordering.setUserId(user);
+        ordering.setOrderDate(Date.valueOf(LocalDate.now()));
+        ordering.setDueDate(Date.valueOf(LocalDate.now()));
+        ordering.setIsDelivery((byte) 0);
+
+        ordering = ORDERING_REPOSITORY.save(ordering);
+
 
         for (int idx = 0; idx < orderPool.getOrder_nos().size(); idx++) {
             Item item = new Item();
             item.setItemNo(orderPool.getOrder_nos().get(idx));
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrder(order);
+            orderDetail.setOrder(ordering);
             orderDetail.setItem(item);
             orderDetail.setQuantity(orderPool.getQuantities().get(idx));
             ORDER_DETAIL_REPOSITORY.save(orderDetail);
         }
 
-        // Approval approval = APPROVAL_REPOSITORY.autoSaveApproval(order.getOrderNo(), (long) Math.toIntExact(order.getBuyerCode().getBuyerCode()), null);
-
     }
-
+    
+    
     // 발주 수정
     @Modifying
     @Transactional
@@ -182,12 +198,20 @@ public class OrderingService {
     }
 
     // 발주등록_Stock을 이름으로 검색하는 메서드 추가
-    public List<StockDTO> searchStocksByName(String name) { // StockDTO 추가할 예정!
-        Item item = new Item();
-        item.setItemName(name);
+    public StockDTO searchStocksByName(String name) { // StockDTO 추가할 예정!
+        Item item = ITEM_REPOSITORY.findByItemName(name);
         List<Stock> stocks = STOCK_REPOSITORY.findByItem(item);
-        //        List<Stock> stocks = STOCK_REPOSITORY.orderFindAllStock(name);
-        return stocks.stream().map(stock -> MODEL_MAPPER.map(stock, StockDTO.class)).toList();
+
+        Stock stock = new Stock();
+        stocks.stream().forEach(stock1 -> {
+            stock.setItem(item);
+            stock.setStockNo(stock1.getStockNo());
+            stock.setQuantity(stock1.getQuantity() + stock.getQuantity());
+            stock.setStorage(stock1.getStorage());
+        });
+
+//                List<Stock> stocks = STOCK_REPOSITORY.orderFindAllStock(name);
+        return MODEL_MAPPER.map(stock, StockDTO.class);
 //        List<Stock> stocks = STOCK_REPOSITORY.orderFindAllStock(name);
 //        return stocks.map(stocks1 -> MODEL_MAPPER.map(stocks1, Stock.class));
     }
@@ -257,5 +281,9 @@ public class OrderingService {
 
     public void updateIsDeliveryByOrderNo(Integer approvalNo) {
         ORDERING_REPOSITORY.updateIsDeliveryTwoByOrderNo(approvalNo);
+    }
+
+    public List<OrderingDTO> getOrderById (Integer approvalNo) {
+        return Collections.singletonList(MODEL_MAPPER.map(ORDERING_REPOSITORY.findById(approvalNo), OrderingDTO.class));
     }
 }

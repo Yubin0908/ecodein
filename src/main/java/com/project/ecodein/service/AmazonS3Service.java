@@ -81,10 +81,10 @@ public class AmazonS3Service {
         String uploadTargetFile =
             UUID.randomUUID().toString().substring(0, 5) + "-" + UUID.randomUUID().toString().substring(0, 10) + "-" + UUID.randomUUID().toString().substring(0, 5) + extension;
 
-        // 파일 업로드를 위한 I/S 생성
+        // 파일 업로드를 위한 InputStream 생성
         InputStream inputStream = file.getInputStream();
 
-        // Metadata 생성(기존 ObjectMetadata Descraded로 Map<> 대체)
+        // Metadata 생성(기존 ObjectMetadata 지원중단으로 Map으로 대체)
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", extension);
         metadata.put("Content-Length", String.valueOf(file.getSize()));
@@ -93,7 +93,7 @@ public class AmazonS3Service {
         PutObjectRequest putRequest = PutObjectRequest.builder()
             .bucket(bucketName)
             .key(uploadTargetFile)
-            .metadata(metadata)  // 메타데이터 추가
+            .metadata(metadata)
             .build();
 
         // S3에 객체 업로드

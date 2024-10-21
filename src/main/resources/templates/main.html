@@ -101,6 +101,7 @@
       letter-spacing: 2px;
       color: #374151;
     }
+    
   </style>
 </head>
 <body class="bg-gray-100">
@@ -131,7 +132,7 @@
             </thead>
             <tbody>
               <tr th:if="${state.count <= 10}" th:each="order, state: ${orders}">
-                <td th:text="${order.orderNo}">1</td>
+								<td><a th:text="${order.orderNo}" th:href="@{/order/detail/{orderNo}(orderNo = ${order.orderNo})}"></a></td>
                 <td th:text="${order.orderDate}">2024-09-15</td>
                 <td th:text="${order.isDelivery == 0 ? '진행중':'완료'}">진행중</td>
               </tr>
@@ -144,9 +145,36 @@
       </div>
       <div class="content-2">
         <p>QnA</p>
-        <p th:text="${boards}"></p>
+        <div>
+          <ul id="boardList" th:each="board: ${boards}" style="display: none" >
+            <li th:text="${#temporals.format(board.boardDate, 'yyyy-MM-dd HH:mm:ss')}" style="color: gray;
+            text-align: left; margin-left: 80px; margin-top: -24px;"></li>
+            <li style="font-weight: bold; margin-left: -200px; margin-top: -24px;"><a
+                th:href="@{/board/{boardNo}(boardNo = ${board.boardNo})}" th:text="${board.boardTitle}"></a></li>
+            <li th:text="${board.user.userName}"
+                style="font-weight: bold; margin-top: -24px; margin-left: 1000px;"></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const boardItems = document.querySelectorAll("#boardList");
+      let currentIndex = 0;
+      
+      function showNextBoard() {
+        boardItems.forEach((item, index) => {
+          
+          item.style.display = index === currentIndex ? "block" : "none";
+          
+        });
+        currentIndex = (currentIndex + 1) % boardItems.length;
+      }
+      
+      showNextBoard();
+      setInterval(showNextBoard, 3000);
+    });
+  </script>
 </body>
 </html>

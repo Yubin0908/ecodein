@@ -354,7 +354,7 @@
                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-2
                             placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6"
                      id="manager" name="user_id"
-                     th:value="${order.userId.user_id}"
+                     th:value="${order.userId.userId}"
                      type="text" readonly>
             </div>
           </div>
@@ -365,8 +365,7 @@
                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-2
                             placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6"
                      id="client"
-                     th:value="${order.buyerCode.buyer_name}"
-                     th:value="${session.user.buyer_code.buyerName}"
+                     th:value="${order.buyerCode.buyerName}"
                      type="text" readonly>
             </div>
           </div>
@@ -417,17 +416,6 @@
         </tr>
         </tbody>
       </table>
-
-      <!-- 페이지네이션  -->
-<!--      <nav aria-label="Page navigation example">-->
-<!--        <ul class="pagination">-->
-<!--          <li><a class="page-link" href="#"><</a></li>-->
-<!--          <li><a class="page-link" href="#">1</a></li>-->
-<!--          <li><a class="page-link" href="#">2</a></li>-->
-<!--          <li><a class="page-link" href="#">3</a></li>-->
-<!--          <li><a class="page-link" href="#">></a></li>-->
-<!--        </ul>-->
-<!--      </nav>-->
 
       <!-- modal _출고등록 -->
       <div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"

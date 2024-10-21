@@ -487,7 +487,7 @@
         <span>(접수완료)</span>
       </span>
       <span class="modal-window-title" th:if="${tab.equals('반품 상세 정보 - ')}"
-            th:text="|${tab} ${serviceName.returnId} (${serviceName.returnStatus == 0 ? '반품접수' : serviceName.returnStatus == 1 ? '반품 진행중':'반품완료'})|" >
+            th:text="|${tab} ${serviceName != null ? tabSubName : 'null'} (${serviceName.returnStatus == 0 ? '반품접수' : serviceName.returnStatus == 1 ? '반품 진행중':'반품완료'})|" >
         <span>(접수완료)</span>
       </span>
       <button class="btn-close" onclick="modal_close()">X</button>

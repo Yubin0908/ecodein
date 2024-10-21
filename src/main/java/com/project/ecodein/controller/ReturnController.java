@@ -69,6 +69,8 @@ public class ReturnController {
         User user = (User) httpSession.getAttribute("user");
         LocalDateTime now = LocalDateTime.now();
 
+        ReturnDTO returnDTO = RETURN_SERVICE.findById(returnId);
+
         if (type.equals("regist")) {
             log.info("type: {} now: {}", type, now);
 
@@ -79,11 +81,10 @@ public class ReturnController {
             }
         } else if (type.equals("detail")) {
             model.addAttribute("tab", "반품 상세 정보 - ");
-            model.addAttribute("serviceName", RETURN_SERVICE.findById(returnId));
+            model.addAttribute("serviceName",returnDTO);
             model.addAttribute("items", RETURN_ITEM_SERVICE.findByReturnId(returnId));
             model.addAttribute("tabName", "반품 상세 정보 - ");
-            model.addAttribute("serviceName", user.getBuyerCode().getBuyerName() + "-" + now.getMonthValue() +
-                "/" + now.getDayOfMonth());
+            model.addAttribute("tabSubName", returnDTO.getReturnId());
         }
 
         return "functional/return-modal";

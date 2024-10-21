@@ -29,4 +29,5 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 		+ "AND is_material = true", nativeQuery = true)
 	Page<Item> searchMaterialOnly (@Param(value = "search") String search, Pageable pageable);
 
+    Item findByItemName(String name);
 }

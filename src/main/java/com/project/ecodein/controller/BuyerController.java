@@ -49,8 +49,6 @@ public class  BuyerController {
 
 		model.addAttribute ("search", search);
 
-		log.info ("search - address-{}, keyword - {}", search, keyword);
-
 		Page<BuyerDTO> list = BUYER_SERVICE.buyers ((int) page, keyword, buyer_status);
 
 		model.addAttribute ("buyers", list);
@@ -81,11 +79,9 @@ public class  BuyerController {
 
 	@GetMapping ("/detail/{buyer_code}")
 	@ResponseBody
-	public Optional<BuyerDTO> modifty (@PathVariable ("buyer_code") Long buyer_code) {
+	public Optional<BuyerDTO> modify (@PathVariable ("buyer_code") Long buyer_code) {
 
 		Optional<BuyerDTO> buyer = BUYER_SERVICE.buyerDetail (buyer_code);
-
-		log.info ("buyer - {}", buyer);
 
 		return buyer;
 

@@ -50,4 +50,5 @@ public interface OrderingRepository extends JpaRepository<Ordering, Integer> {
     @Query(value = "select * from ordering where buyer_code = :buyer_code", nativeQuery = true)
     List<Ordering> findAllByBuyerCode (@Param("buyer_code") int buyer_code);
 
+    Ordering findTopByOrderByOrderNoDesc();
 }

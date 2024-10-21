@@ -3,17 +3,16 @@ package com.project.ecodein.controller;
 import com.project.ecodein.dto.ApprovalDTO;
 import com.project.ecodein.dto.ApprovalStatusLableDTO;
 import com.project.ecodein.dto.OrderDetailDTO;
+import com.project.ecodein.dto.OrderingDTO;
 import com.project.ecodein.service.ApprovalService;
+import com.project.ecodein.service.ApprovalStatusLableService;
 import com.project.ecodein.service.OrderingService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,21 +23,34 @@ public class ApprovalController {
 
     private final ApprovalService APPROVAL_SERVICE;
     private final OrderingService ORDERING_SERVICE;
+    private final ApprovalStatusLableService APPROVAL_STATUS_LABLE_SERVICE;
 
-    public ApprovalController(ApprovalService approvalService, OrderingService orderingService) {
+    public ApprovalController(ApprovalService approvalService, OrderingService orderingService, ApprovalStatusLableService approvalStatusLableService) {
         APPROVAL_SERVICE = approvalService;
         ORDERING_SERVICE = orderingService;
+        APPROVAL_STATUS_LABLE_SERVICE = approvalStatusLableService;
     }
 
-    @GetMapping("/{page}")
-    public String approvalList(Model modal, @PathVariable(name = "page") Integer page) {
+    @GetMapping({"/{page}", "/{page}/{status}"})
+    public String approvalList(Model modal,
+                               @PathVariable(name = "page") Integer page,
+                               @PathVariable(name = "status", required = false) byte status,
+                               @RequestParam(name = "keyword", required = false) Integer keyword) {
+
         if (page == null) {
             page = 1;
         }
 
-        Page<ApprovalDTO> lists = APPROVAL_SERVICE.getApprovals((int) page);
+        if (status == 5 || keyword != null) {
+            Page<ApprovalDTO> lists = APPROVAL_SERVICE.getApprovals((int) page, keyword);
+            log.info(String.valueOf(lists));
+            modal.addAttribute("approvals", lists);
+        } else {
+            Page<ApprovalStatusLableDTO> lists = APPROVAL_STATUS_LABLE_SERVICE.getApprovalStatusLables((int) page, status);
+            log.info(String.valueOf(lists));
+            modal.addAttribute("approvalLables", lists);
+        }
 
-        modal.addAttribute("approvals", lists);
         return "approval/approval-list";
     }
 
@@ -54,7 +66,10 @@ public class ApprovalController {
         model.addAttribute("statuslable", statuslable);
 
         // 발주정보
+        List<OrderingDTO> order = ORDERING_SERVICE.getOrderById(approval_no);
         List<OrderDetailDTO> orderDetails = APPROVAL_SERVICE.getOrderDetails(approval_no);
+        log.error(String.valueOf(order));
+        model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
 
         // 발주수량

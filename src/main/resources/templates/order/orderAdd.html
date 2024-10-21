@@ -214,41 +214,6 @@
                    th:value="${session.user.userId}"
                    type="text" readonly>
 
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900" for="client">거래처</label>
-            <div class="mt-2">
-              <input autocomplete="given-name"
-                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
-                     sm:text-sm sm:leading-6"
-                     id="client"
-                     th:value="${session.user.buyerCode.buyerName}"
-                     type="text" readonly>
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900" for="due-date">납기일자</label>
-            <div class="mt-2">
-              <input autocomplete="given-name"
-                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
-                     sm:text-sm sm:leading-6"
-                     id="due-date" name="due_date"
-                     type="date">
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900" for="client-code">거래처 코드</label>
-            <div class="mt-2">
-              <input autocomplete="given-name" th:value="${session.user.buyerCode.buyerCode}"
-                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-                     ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
-                     sm:text-sm sm:leading-6"
-                     id="client-code" name="buyerCode"
-                     type="text" readonly>
-            </div>
           </div>
         </div>
         <div>
@@ -359,7 +324,7 @@
               <th class="p-4 text-sm font-normal leading-none text-slate-500">선택</th>
             </tr>
             </thead>
-                <tbody class="item-body">
+            <tbody class="item-body">
             <!--              <tr th:each="product:${items}">-->
             <!--                <td th:text="${product.item.itemImage}" th:alt="상품 이미지" th:width="50"></td>-->
             <!--                <td th:text="${product.item.itemNo}"></td>-->
@@ -371,7 +336,7 @@
             <!--                          th:onclick="addProduct(${product.item.itemNo}, '${product.item.itemName}', ${product.item.itemPrice}),-->
             <!--                          item_array.push(${product.item.itemNo})">선택</button></td>-->
             <!--              </tr>-->
-                  </tbody>
+            </tbody>
           </table>
         </div>
       </div>
@@ -519,26 +484,20 @@
     fetch(`/order/search?query=${query}`)
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           item_body.innerHTML = '';
 
-          if (data.length > 0) {
-            data.forEach(product => {
-              console.log(product)
-              if (!product.item.isMaterial) {
-                item_body.innerHTML += `
-                    <tr>
-                        <td><img src="${product.item.itemImage}" alt="상품 이미지" width="50"></td>
-                        <td>${product.item.itemNo}</td>
-                        <td>${product.item.itemName}</td>
-                        <td>${product.quantity}</td>
-                        <td>${product.item.itemPrice}</td>
-                        <td><button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"
-                               onclick="addProduct(${product.item.itemNo}, '${product.item.itemName}', ${product.item.itemPrice}),
-                                        item_array.push(${product.item.itemNo})">선택</button></td>
-                    </tr>`;
-              }
-            });
+          if (data.item != null) {
+            item_body.innerHTML = `
+                <tr>
+                    <td><img src="${data.item.itemImage}" alt="상품 이미지" width="50"></td>
+                    <td>${data.item.itemNo}</td>
+                    <td>${data.item.itemName}</td>
+                    <td>${data.quantity}</td>
+                    <td>${data.item.itemPrice}</td>
+                    <td><button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"
+                           onclick="addProduct(${data.item.itemNo}, '${data.item.itemName}', ${data.item.itemPrice}),
+                                    item_array.push(${data.item.itemNo})">선택</button></td>
+                </tr>`;
           } else {
             item_body.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
           }

@@ -27,4 +27,6 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
     @Transactional
     @Query(value = "update admin set admin_recognize = 1 where admin_id like :adminId", nativeQuery = true)
     void updateAdminAuthByAdminId (String adminId);
+
+    Admin findByAdminName(String adminName);
 }

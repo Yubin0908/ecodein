@@ -43,10 +43,10 @@ public class StorageService {
 
             return storages.map(storage -> MODEL_MAPPER.map(storage, StorageDTO.class));
         }
-        Page<Storage> storages = STORAGE_REPOSITORY.findAllByStorageNameOrStorageSite(keyword, pageable);
+        Page<Storage> storages = 
+            STORAGE_REPOSITORY.findAllByStorageNameOrStorageSite(keyword, PageRequest.of (page - 1, 10, Sort.by (Sort.Order.desc ("storage_no"))));
 
     	return storages.map(storage -> MODEL_MAPPER.map(storage, StorageDTO.class));
-
     }
     
     public StorageDTO getStorageByStorageNo (Integer storage_no) {

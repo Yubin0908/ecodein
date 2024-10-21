@@ -212,7 +212,7 @@
                      ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
                      sm:text-sm sm:leading-6 pl-2"
                      id="manager" name="user_id"
-                     th:value="${session.user.user_id}"
+                     th:value="${session.user.userId}"
                      type="text" readonly>
             </div>
           </div>
@@ -224,7 +224,7 @@
                      ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
                      sm:text-sm sm:leading-6 pl-2"
                      id="client"
-                     th:value="${order.buyerCode.buyer_name}"
+                     th:value="${order.buyerCode.buyerName}"
                      type="text" readonly>
             </div>
           </div>
@@ -235,7 +235,7 @@
                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
                      ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
                      sm:text-sm sm:leading-6 pl-2 pr-2"
-                     id="due-date" name="due_date" th:value="${order.dueDate}"
+                     id="due-date" name="due_date"
                      type="date">
             </div>
           </div>

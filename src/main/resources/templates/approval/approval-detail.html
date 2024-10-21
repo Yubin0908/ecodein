@@ -132,14 +132,14 @@
       dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600
       dark:focus:ring-gray-700"
       th:if="${statuslable.status != 3}"
-      th:onclick="approval_pass_control('[[${approval.ordering.orderNo}]]')">
+      th:onclick="approval_pass_control([[${approval.approvalNo}]])">
       결재처리
     </button>
     <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4
       focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600
       dark:hover:bg-red-700 dark:focus:ring-red-900"
       th:if="${statuslable.status != 3}"
-      th:onclick="approval_destroy([[${approval.ordering.orderNo}]])">
+      th:onclick="approval_destroy([[${approval.approvalNo}]])">
       반려처리
     </button>
     <span th:if="${statuslable.status == 3}" class="font-bold text-xs">
@@ -148,10 +148,10 @@
   </div>
   <div id="title">발주 상세 내역서</div>
   <div id="detail">
-    <span class="order-date">발주 일자 : <span th:text="${approval.ordering.orderDate}">2024-09-30 11:24</span></span>
+    <span class="order-date">발주 일자 : <span th:text="${order.get(0).orderDate}">2024-09-30 11:24</span></span>
     <span class="out-sorting" >
       출고상태 :
-      <span th:text="${approval.ordering.isDelivery == 0 ? '접수':approval.ordering.isDelivery == 1 ? '출고진행중':'출고완료'}">
+      <span th:text="${order.get(0).isDelivery == 0 ? '접수':order.get(0).isDelivery == 1 ? '출고진행중':'출고완료'}">
         출고준비중
       </span>
     </span>
@@ -166,7 +166,7 @@
       </colgroup>
       <tr>
         <td>발주 번호</td>
-        <td th:text="${approval.ordering.orderNo}">2024093001212</td>
+        <td th:text="${order.get(0).orderNo}">2024093001212</td>
         <td>발주처</td>
         <td th:text="${approval.buyer.buyerName}">CU 홍대입구역점</td>
         <td>전화번호</td>
@@ -194,7 +194,7 @@
         <td>결재일자</td>
         <td th:text="${#temporals.format(statuslable.updateLableDate, 'yyyy-MM-dd HH:mm:ss')}">2024-09-30 16:43</td>
         <td>담당자</td>
-        <td th:text="${statuslable.admin.admin_name}">장유빈</td>
+        <td th:text="${statuslable.admin.adminName}">장유빈</td>
       </tr>
     </table>
   </div>
