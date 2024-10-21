@@ -5,6 +5,7 @@ package com.project.ecodein.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.modelmapper.ModelMapper;
@@ -104,7 +105,8 @@ public class OrderingService {
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
             // (키워드 검색) 검색어가 있는 경우
         } else if (query != null) {
-            Page<Ordering> ordering = ORDERING_REPOSITORY.searchByQuery(query, pageable);
+            Page<Ordering> ordering =
+                ORDERING_REPOSITORY.searchByQuery(query, pageable);
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
             // (상태 검색) 상태코드가 있는 경우
         } else {
@@ -198,22 +200,36 @@ public class OrderingService {
     }
 
     // 발주등록_Stock을 이름으로 검색하는 메서드 추가
-    public StockDTO searchStocksByName(String name) { // StockDTO 추가할 예정!
-        Item item = ITEM_REPOSITORY.findByItemName(name);
-        List<Stock> stocks = STOCK_REPOSITORY.findByItem(item);
+    public List<StockDTO> searchStocksByName(String name) { // StockDTO 추가할 예정!
+        List<Item> items = ITEM_REPOSITORY.findAllByItemNameContaining(name);
+        List<Stock> stocks = STOCK_REPOSITORY.findAllByItem_ItemNameContaining(name);
 
-        Stock stock = new Stock();
-        stocks.stream().forEach(stock1 -> {
-            stock.setItem(item);
-            stock.setStockNo(stock1.getStockNo());
-            stock.setQuantity(stock1.getQuantity() + stock.getQuantity());
-            stock.setStorage(stock1.getStorage());
-        });
 
-//                List<Stock> stocks = STOCK_REPOSITORY.orderFindAllStock(name);
-        return MODEL_MAPPER.map(stock, StockDTO.class);
-//        List<Stock> stocks = STOCK_REPOSITORY.orderFindAllStock(name);
-//        return stocks.map(stocks1 -> MODEL_MAPPER.map(stocks1, Stock.class));
+        List<Stock> stockList = new ArrayList<Stock>();
+        Stock stock = null;
+
+        for (Item item : items) {
+            if (!item.getIsMaterial()) {
+                stock = new Stock();
+                stock.setItem(item);
+                stockList.add(stock);
+            }
+        }
+
+        for (int i = 0; i < stocks.size(); i++) {
+            for (int j = 0; j < stockList.size(); j++) {
+                if (stockList.get(j).getItem().getItemNo() == stocks.get(i).getItem().getItemNo()) {
+                    stockList.get(j).setQuantity(stockList.get(j).getQuantity() + stocks.get(i).getQuantity());
+                    stockList.get(j).setStockNo(stocks.get(i).getStockNo());
+                    stockList.get(j).setStorage(stocks.get(i).getStorage());
+                    break;
+                }
+            }
+        }
+
+        log.error("stockList - {}", stockList);
+
+        return stockList.stream().map(stockArr -> MODEL_MAPPER.map(stockArr, StockDTO.class)).toList();
     }
 
     // 발주등록_상품등록

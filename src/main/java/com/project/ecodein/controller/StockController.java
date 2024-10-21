@@ -80,6 +80,7 @@ public class StockController {
 		model.addAttribute("paging", paging);
 		model.addAttribute("itemModalSearch", search);
 		
+		
 		return "stock/stockModal :: itemModalContent";
 		
 	}

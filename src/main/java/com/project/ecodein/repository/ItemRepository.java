@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.project.ecodein.entity.Item;
 
+import java.util.List;
+
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	//검색어로 전체 검색
@@ -30,4 +32,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	Page<Item> searchMaterialOnly (@Param(value = "search") String search, Pageable pageable);
 
     Item findByItemName(String name);
+
+    List<Item> findAllByItemNameContaining (String name);
 }

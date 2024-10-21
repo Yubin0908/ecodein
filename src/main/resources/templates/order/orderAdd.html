@@ -9,7 +9,7 @@
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link href="/css/default-style.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
-
+  
   <style>
     .breadcrumb {
       width: 50%;
@@ -131,14 +131,15 @@
     body > div:nth-last-child(1) {
       z-index: 0 !important;
     }
-
+    
     .flex {
       display: block !important;
+      z-index: 99 !important;
     }
-
-    input:active, input:focus {
-      border: 2px solid black !important;
-    }
+    
+    /*input:active, input:focus {*/
+    /*  border: 2px solid black !important;*/
+    /*}*/
 
   </style>
 </head>
@@ -282,9 +283,12 @@
            id="popup-modal-3"
            style="left: 50%; top: 20%; transform: translateX(-50%); z-index: 1;
                   flex: none !important; width: 40%; max-width: 960px;">
-        <div class="block mb-4 mx-auto border-b border-slate-300 pb-2 max-w-[360px]">
+        <div class="block mb-4 mx-auto border-b border-slate-300 pb-2">
           <p class='block w-full px-4 py-2 text-center text-slate-700 transition-all '>
             <b>상품검색</b>
+            <b style="float: right; cursor: pointer;" data-modal-toggle="popup-modal-3"
+              >X
+            </b>
           </p>
         </div>
         <div class="w-full flex justify-between items-center mb-3 mt-12 pl-3">
@@ -292,16 +296,16 @@
             <div class="w-full max-w-sm min-w-[200px] relative">
               <div class="relative">
                 <input
-                        class="bg-white w-full pr-11 h-10 pl-3 py-2 bg-transparent placeholder:text-slate-400
-                        text-slate-700 text-sm border border-slate-200 rounded transition duration-300 ease
-                        focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                        placeholder="상품코드/상품명 검색..."
-                        id="searchInput"
+                    class="bg-white w-full pr-11 h-10 pl-3 py-2 bg-transparent placeholder:text-slate-400
+                      text-slate-700 text-sm border border-slate-200 rounded transition duration-300 ease
+                      focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
+                    placeholder="상품코드/상품명 검색..."
+                    id="searchInput"
                 />
                 <button
-                        class="absolute h-8 w-8 right-3 top-1 my-auto px-2 flex items-center rounded "
-                        type="button"
-                        onclick="searchProducts()"
+                    class="absolute h-8 w-8 right-3 top-1 my-auto px-2 flex items-center rounded "
+                    type="button"
+                    onclick="searchProducts()"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
                        stroke="currentColor" class="w-8 h-8 text-slate-600">
@@ -313,8 +317,9 @@
             </div>
           </div>
         </div>
+        
         <div class="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md
-                    rounded-lg bg-clip-border ">
+                    rounded-lg bg-clip-border" style="overflow: auto">
           <table class="w-full text-left table-auto min-w-max" id="productTable">
             <thead>
             <tr class="border-b border-slate-300 bg-slate-50">
@@ -327,17 +332,6 @@
             </tr>
             </thead>
             <tbody class="item-body">
-            <!--              <tr th:each="product:${items}">-->
-            <!--                <td th:text="${product.item.itemImage}" th:alt="상품 이미지" th:width="50"></td>-->
-            <!--                <td th:text="${product.item.itemNo}"></td>-->
-            <!--                <td th:text="${product.item.itemName}"></td>-->
-            <!--                <td th:text="${product.quantity}"></td>-->
-            <!--                <td th:text="${product.item.itemPrice}"></td>-->
-            <!--                <td>-->
-            <!--                  <button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"-->
-            <!--                          th:onclick="addProduct(${product.item.itemNo}, '${product.item.itemName}', ${product.item.itemPrice}),-->
-            <!--                          item_array.push(${product.item.itemNo})">선택</button></td>-->
-            <!--              </tr>-->
             </tbody>
           </table>
         </div>
@@ -352,6 +346,16 @@
   var point = 0;
   for (let idx = 0; idx <= 10; idx++) {
     items[idx] = new Array(2);
+  }
+  
+  function modal_controller () {
+    if (document.querySelector('#popup-modal-3').classList.contains('hidden')) {
+      document.querySelector('#popup-modal-3').classList.add('flex');
+      document.querySelector('#popup-modal-3').classList.remove('hidden');
+    } else {
+      document.querySelector('#popup-modal-3').classList.remove('hidden');
+      document.querySelector('#popup-modal-3').classList.remove('flex');
+    }
   }
 
   // 출고조회_전체/접수/결재완료/출고진행/출고완료
@@ -487,22 +491,23 @@
         .then(response => response.json())
         .then(data => {
           item_body.innerHTML = '';
-
-          if (data.item != null) {
-            item_body.innerHTML = `
-                <tr>
-                    <td><img src="${data.item.itemImage}" alt="상품 이미지" width="50"></td>
-                    <td>${data.item.itemNo}</td>
-                    <td>${data.item.itemName}</td>
-                    <td>${data.quantity}</td>
-                    <td>${data.item.itemPrice}</td>
-                    <td><button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"
-                           onclick="addProduct(${data.item.itemNo}, '${data.item.itemName}', ${data.item.itemPrice}),
-                                    item_array.push(${data.item.itemNo})">선택</button></td>
-                </tr>`;
-          } else {
+          console.log(data.length)
+          if (!data.length) {
             item_body.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
           }
+            for (let idx in data) {
+              item_body.innerHTML += `
+                <tr>
+                    <td><img src="${data[idx].item.itemImage}" alt="상품 이미지" width="50"></td>
+                    <td>${data[idx].item.itemNo}</td>
+                    <td>${data[idx].item.itemName}</td>
+                    <td>${data[idx].quantity}</td>
+                    <td>${data[idx].item.itemPrice}</td>
+                    <td><button class="bg-blue-500 text-white px-4 py-2 rounded" type="button"
+                           onclick="addProduct(${data[idx].item.itemNo}, '${data[idx].item.itemName}', ${data[idx].item.itemPrice});
+                                    item_array.push(${data[idx].item.itemNo})">선택</button></td>
+                </tr>`;
+            }
         })
         .catch(error => console.error('Error:', error));
   }

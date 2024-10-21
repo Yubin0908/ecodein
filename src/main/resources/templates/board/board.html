@@ -5,7 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Q&A</title>
-<link rel="shortcut icon" href="/img/layout/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/img/layout/favicon.ico"
+	type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <style>
 .main-content {
@@ -78,8 +79,6 @@ form>input {
 	border: 1px solid #888;
 }
 
-
-
 .pagination {
 	display: flex;
 	justify-content: center;
@@ -129,9 +128,9 @@ form>input {
 </head>
 
 <body>
-  <div id="header-controller" style="width: 310px; float: left;">
-    <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
-  </div>
+	<div id="header-controller" style="width: 310px; float: left;">
+		<th:block th:replace="fragments/sidebar :: sidebarFragment" />
+	</div>
 	<div id="content">
 		<div id="content_wrap">
 			<div class="search-group">
@@ -144,8 +143,8 @@ form>input {
 						value="조 회">
 				</form>
 
-
-				<button class="button-register" onclick="location.href='/board/add'">등록</button>
+				<button th:if="${session.user != null}" class="button-register"
+					onclick="location.href='/board/add'">등록</button>
 			</div>
 
 			<div class="main-content">
@@ -169,21 +168,14 @@ form>input {
 								th:text="${#temporals.format(board.boardDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
 					</tbody>
 				</table>
-
-
+				
 				<div id="paging" class="pagination">
-
-					<!-- 맨 앞으로 이동 -->
 					<button class="page-link"
 						th:onclick="'location.href=\'/board/board?page=' + @{${paging.startPage}} + '\''">
 						<<</button>
-
-					<!-- 이전 페이지로 이동 -->
 					<button class="page-link"
 						th:onclick="'location.href=\'/board/board?page=' + @{${paging.currentPage - 1}} + '\''"
 						th:disabled="${ boardList.first }"><</button>
-
-					<!-- 숫자 버튼 -->
 					<th:block
 						th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
 						<button class="page-link"
@@ -191,21 +183,29 @@ form>input {
 							th:text="${ page }" th:disabled="${ paging.currentPage eq page }">
 						</button>
 					</th:block>
-
-					<!-- 다음 페이지로 이동 -->
 					<button class="page-link"
 						th:onclick="'location.href=\'/board/board?page=' + @{${paging.currentPage + 1}} + '\''"
 						th:disabled="${ boardList.last }">></button>
-
-					<!-- 맨 끝으로 이동 -->
 					<button class="page-link"
 						th:onclick="'location.href=\'/board/board?page=' + @{${paging.endPage}} + '\''">
 						>></button>
 				</div>
+
+
+
 			</div>
 		</div>
 	</div>
-	
+
+
+<!-- 	<script type="text/javascript">
+		function changePage(element) {
+			let search = document.getElementById('search').value || '';
+			let page = element.value
+
+			window.location.href = `?page=${page}&search=${encodeURIComponent(search)}`
+		}
+	</script> -->
 
 </body>
 

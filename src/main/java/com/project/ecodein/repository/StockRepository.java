@@ -122,7 +122,7 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
 	public void orderUpdateStock (@Param(value = "stock_no") int stock_no, @Param(value = "quantity") int quantity);
 
 
-    List<Stock> findByItem(Item item);
+    List<Stock> findAllByItem_ItemNameContaining(String itemName);
 
 //    List<Stock> orderFindAllStock(String name);
 

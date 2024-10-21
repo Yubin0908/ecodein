@@ -16,7 +16,6 @@ import com.project.ecodein.common.Pagenation;
 import com.project.ecodein.common.PagingButtonInfo;
 import com.project.ecodein.dto.BoardDTO;
 import com.project.ecodein.dto.CommentDTO;
-import com.project.ecodein.entity.Comment;
 import com.project.ecodein.service.BoardService;
 import com.project.ecodein.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,22 +49,31 @@ public class BoardController {
 
 	}
 
-	// 목록
-	@GetMapping ("/board")
-	public String findBoardList (@PageableDefault Pageable pageable, Model model, String search) {
+	  // 목록
+	  @GetMapping ("/board")
+	  public String findBoardList (@PageableDefault Pageable pageable, Model model, String search) {
+	  Page<BoardDTO> boardList = boardService.findBoardList (pageable, search);
+	  PagingButtonInfo paging = Pagenation.getPagingButtonInfo (boardList);
+	  model.addAttribute ("paging", paging);
+	  model.addAttribute ("boardList", boardList);
+	  model.addAttribute ("search", search);
+	  System.out.println (pageable);
+	  return "board/board";
+	  }
+	 
 
-		Page<BoardDTO> boardList = boardService.findBoardList (pageable, search);
-
-		PagingButtonInfo paging = Pagenation.getPagingButtonInfo (boardList);
-
-		model.addAttribute ("paging", paging);
-		model.addAttribute ("boardList", boardList);
-		model.addAttribute ("search", search);
-
-		return "board/board";
-
-	}
-
+	/*
+	 * @GetMapping ("/board")
+	 * public String findBoardList (@RequestParam(defaultValue = "1") int page, Model model, String search) {
+	 * Page<BoardDTO> boardList = boardService.findBoardList (page, search);
+	 * PagingButtonInfo paging = Pagenation.getPagingButtonInfo (boardList, 5);
+	 * model.addAttribute ("paging", paging);
+	 * model.addAttribute ("boardList", boardList);
+	 * model.addAttribute ("search", search);
+	 * return "board/board";
+	 * }
+	 */
+	
 	// 등록
 	@GetMapping ("/add")
 	public void addPage () {
