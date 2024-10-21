@@ -238,7 +238,7 @@
                      ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400
                      sm:text-sm sm:leading-6 pl-2 pr-2"
                      id="due-date" name="due_date"
-                     type="date">
+                     type="date" th:value="${order.dueDate}">
             </div>
           </div>
           <div>
@@ -350,7 +350,6 @@
   console.log(array);
 
   for (let idx = 0; idx < array.length; idx++) {
-    // item_array.push(array[idx].item.itemNo);
     items[idx][0] = array[idx].item.itemNo;
     items[idx][1] = array[idx].quantity;
     items[idx][2] = array[idx].item.itemPrice;
@@ -395,6 +394,7 @@
       const input = document.createElement('input');
       input.type = "number";
       input.name = "quantities";
+      input.placeholder = quantity === undefined ? 0 : quantity;
       input.value = (stock === 0 && stock !== undefined) ? stock : quantity;
       input.onchange = function() { quantity_modify(itemNo, this); };
 
@@ -422,7 +422,19 @@
     
     for (let idx = 0; idx < point; idx++) {
       if (items[idx][0] === itemNo) {
-        items[idx][1] = e.value;
+        fetch('/order/stock-check/'+ itemNo, {
+          method: 'get',
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data < e.value) {
+              alert(`해당 상품의 재고가 부족합니다. 해당 상품의 재고는 ${data}개 입니다.`);
+              e.value = '';
+            } else {
+              items[idx][1] = e.value;
+            }
+          
+          });
       }
     }
   }

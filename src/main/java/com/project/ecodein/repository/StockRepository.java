@@ -130,4 +130,5 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
     // 기능 상세 : 창고별 재고조회 기능
     List<Stock> findByStorage(Storage storage);
 
+    List<Stock> findByItem_itemNo (int itemNo);
 }

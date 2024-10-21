@@ -158,4 +158,11 @@ public class OrderController {
         model.addAttribute("msg", "결재가 완료되지 않았습니다.");
         return "forward:/order/detail/"+orderNo;
     }
+    
+    // 발주 상품 수량 체크
+    @GetMapping("/stock-check/{itemNo}")
+    @ResponseBody
+    public Integer orderStockCheck (@PathVariable int itemNo) {
+        return ORDERING_SERVICE.stockCheck(itemNo);
+    }
 }

@@ -184,7 +184,6 @@ public class OrderingService {
         ordering.setUserId(new User(orderPool.getUserId()));
         ordering.setDueDate(orderPool.getDue_date());
         ordering.setOrderDate(Date.valueOf(LocalDate.now()));
-        log.info("orderPool - {}", orderPool);
         Ordering order = ORDERING_REPOSITORY.save(ordering);
 
         for (int idx = 0; idx < orderPool.getOrder_nos().size(); idx++) {
@@ -196,7 +195,6 @@ public class OrderingService {
             orderDetail.setQuantity(orderPool.getQuantities().get(idx));
             ORDER_DETAIL_REPOSITORY.save(orderDetail);
         }
-        System.out.println("order" + order);
     }
 
     // 발주등록_Stock을 이름으로 검색하는 메서드 추가
@@ -301,5 +299,19 @@ public class OrderingService {
 
     public List<OrderingDTO> getOrderById (Integer approvalNo) {
         return Collections.singletonList(MODEL_MAPPER.map(ORDERING_REPOSITORY.findById(approvalNo), OrderingDTO.class));
+    }
+
+    public int stockCheck (int itemNo) {
+        List<Stock> stocks = STOCK_REPOSITORY.findByItem_itemNo(itemNo);
+
+        int quantity = 0;
+
+        if (!stocks.isEmpty()) {
+            for (Stock stock : stocks) {
+                quantity += stock.getQuantity();
+            }
+        }
+
+        return quantity;
     }
 }
