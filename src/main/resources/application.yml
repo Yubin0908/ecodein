@@ -1,0 +1,56 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      force-response: true
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: utf-8
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  # 개발용
+  #  jpa:
+  #    show-sql: true
+
+  # paging 관련 설정
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        one-indexed-parameters: true
+
+  # * AWS Bucket에 이미지를 올리기위해 용량 설정.(1MB 이상 파일을 올리기 위해 작성)
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+logging:
+  charset:
+    console: utf-8
+    file: UTF-8
+  level:
+    root: error
+  file:
+    name: eco_de_in_logger.log
+    max-history: 3
+
+cloud:
+  aws:
+    region:
+      static: ${S3_REGION}
+    stack:
+      auto: false
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    s3:
+      bucket: ${S3_BUCKET_NAME}
