@@ -214,7 +214,9 @@
     </div>
 
     <div class="float-right w-full mt-5">
-      <a th:if="${session.user != null}" class="inline button-register mr-4" th:href="@{/order/modify/{orderNo}(orderNo = ${order.orderNo})}">수 정
+      <a th:if="${session.user != null && order.isDelivery < 2}" class="inline button-register mr-4"
+			th:href="@{/order/modify/{orderNo}(orderNo = ${order.orderNo})}">
+			수 정
       </a>
       <button class="inline button-register mr-4" onclick="history.back()">뒤로가기</button>
       <a th:if="${session.admin != null && order.isDelivery != 3}" class="inline button-register mr-4" type="button"

@@ -474,6 +474,7 @@
       body: formData
     })
         .then(data => location.href = `${data.url}`)
+				.error(er => console.log(er))
   }
 
   // 발주등록 검색 결과를 화면에 표시

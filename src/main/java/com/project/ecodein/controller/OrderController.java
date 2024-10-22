@@ -138,7 +138,7 @@ public class OrderController {
         return "order/orderModify";
     }
 
-    @PostMapping("/modify/1")
+    @PostMapping("/modify")
     public String modifyOrder (@ModelAttribute OrderPoolDTO orderPoolDTO) {
         ORDERING_SERVICE.deleteOrderDetail(orderPoolDTO.getOrderNo());
         ORDERING_SERVICE.orderModify(orderPoolDTO);
