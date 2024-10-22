@@ -96,6 +96,7 @@ public class ApprovalService {
     public void approvalStatusUpdate (Integer approval_no, byte status, HttpSession session) {
         Admin admin = (Admin) session.getAttribute("admin");
         String admin_id = admin.getAdminId();
+        System.out.println("status : " + status);
         APPROVAL_STATUS_LABLE.updateApprovalStatus(status, admin_id, approval_no);
     }
 }
