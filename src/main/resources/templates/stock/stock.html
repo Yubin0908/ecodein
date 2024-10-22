@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>재고 리스트</title>
-<link rel="shortcut icon" href="/img/layout/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-<style type="text/css">
-	.breadcrumb {
+  <meta charset="UTF-8">
+  <title>재고 리스트</title>
+  <link rel="shortcut icon" href="/img/layout/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <style type="text/css">
+    .breadcrumb {
       width: 50%;
       height: 40px;
     }
@@ -39,8 +39,8 @@
     }
     
     .select {
-    	border: 1px #000 solid;
-    	border-radius: 15px;
+      border: 1px #000 solid;
+      border-radius: 15px;
     }
     
     .search_input {
@@ -55,7 +55,7 @@
       /*left: 74%;*/
       left: calc(100% - 450px);
     }
-           
+    
     .search_btn {
       padding: 5px 20px;
       background-color: #81CD28;
@@ -119,458 +119,458 @@
     }
     
     .bold {
-    	font-weight: bold !important;
+      font-weight: bold !important;
     }
     
     .stock {
-    	cursor: pointer;
+      cursor: pointer;
     }
     
     .stock:hover {
-    	font-weight: bold;
+      font-weight: bold;
     }
     
     .modalBackground {
-			display: none;
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
-			z-index: 999;
-		}
-
-		.modal {
-				display: none;
-				position : fixed;
-				top : 50%;
-				left : 50%;
-				transform : translate(-50%, -50%);
-				width: 600px;
-				height: 750px;
-				background-color: #FFF;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-				z-index: 1000;
-				font-size: 20px;
-				font-weight: bolder;
-		}
-		
-		.modalSmall {
-				display: none;
-				position : fixed;
-				top : 50%;
-				left : 50%;
-				transform : translate(-50%, -50%);
-				width: 600px;
-				height: 550px;
-				background-color: #FFF;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-				z-index: 1000;
-				font-size: 20px;
-				font-weight: bolder;
-		}
-		
-		.modalContent {
-			margin: 20px;
-			position: relative;
-			top: 40px;
-		}
-		
-		.modal img {
-			width:400px;
-			height: 400px;
-			display: inline-block;
-			border: 2px solid #000;
-		}
-		.noFocus:focus {
-			outline: none;
-		}
-		
-		img.closeButton {
-			width: 40px;
-			height: 40px;
-			border: none;
-		}
-		
-		.closeModal {
-			position: absolute;
-			right : 20px;
-			top : 20px;
-		}
-		
-		.modalButton {
-	    	background-color: #81CD28;
-	      width: 100px;
-	      height: 40px;
-	      border-radius: 10px;
-	      color: #fff;
-	      font-size : 15px;
-	      font-weight: bold;
-	      margin: .7% .5%;
-	    }
-		
-		.modalButtonRight {
-			position: absolute;
-			right: 20px;
-			bottom: 20px;
-		}
-		
-		.modalButtonLeft {
-			position: absolute;
-			right: 160px;
-			bottom: 20px;
-		}
-		
-		.modalInput {
-			width: 400px;
-			height: 40px;
-			background-color: #D9D9D9;
-		}
-		
-		.input {
-			width: 400px;
-			height: 30px;
-			background-color: #D9D9D9;
-		}	
-
-		.input:focus {
-			width: 400px;
-			height: 30px;
-			background-color: #FFF;
-		}
-		
-		.right {
-			position: relative;
-			left: 1350px;
-		}
-		
-		table {
-			margin : 0 auto;
-			font-size : 20px;
-		}
-		
-		.modalContent table {
-				margin : 10px auto;
-				font-size: 22px;
-				font-weight: normal;
-			}
-			
-		.modalContent table td,th {
-			padding : 0 20px;
-		}
-		
-		.modalContent .tableHover {
-			cursor: pointer;
-		}
-		
-		.modalContent .tableHover:hover {
-			font-weight: bold;
-		}
-</style>
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    
+    .modal {
+      display: none;
+      position : fixed;
+      top : 50%;
+      left : 50%;
+      transform : translate(-50%, -50%);
+      width: 600px;
+      height: 750px;
+      background-color: #FFF;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      font-size: 20px;
+      font-weight: bolder;
+    }
+    
+    .modalSmall {
+      display: none;
+      position : fixed;
+      top : 50%;
+      left : 50%;
+      transform : translate(-50%, -50%);
+      width: 600px;
+      height: 550px;
+      background-color: #FFF;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      font-size: 20px;
+      font-weight: bolder;
+    }
+    
+    .modalContent {
+      margin: 20px;
+      position: relative;
+      top: 40px;
+    }
+    
+    .modal img {
+      width:400px;
+      height: 400px;
+      display: inline-block;
+      border: 2px solid #000;
+    }
+    .noFocus:focus {
+      outline: none;
+    }
+    
+    img.closeButton {
+      width: 40px;
+      height: 40px;
+      border: none;
+    }
+    
+    .closeModal {
+      position: absolute;
+      right : 20px;
+      top : 20px;
+    }
+    
+    .modalButton {
+      background-color: #81CD28;
+      width: 100px;
+      height: 40px;
+      border-radius: 10px;
+      color: #fff;
+      font-size : 15px;
+      font-weight: bold;
+      margin: .7% .5%;
+    }
+    
+    .modalButtonRight {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+    }
+    
+    .modalButtonLeft {
+      position: absolute;
+      right: 160px;
+      bottom: 20px;
+    }
+    
+    .modalInput {
+      width: 400px;
+      height: 40px;
+      background-color: #D9D9D9;
+    }
+    
+    .input {
+      width: 400px;
+      height: 30px;
+      background-color: #D9D9D9;
+    }
+    
+    .input:focus {
+      width: 400px;
+      height: 30px;
+      background-color: #FFF;
+    }
+    
+    .right {
+      position: relative;
+      left: 1350px;
+    }
+    
+    table {
+      margin : 0 auto;
+      font-size : 20px;
+    }
+    
+    .modalContent table {
+      margin : 10px auto;
+      font-size: 22px;
+      font-weight: normal;
+    }
+    
+    .modalContent table td,th {
+      padding : 0 20px;
+    }
+    
+    .modalContent .tableHover {
+      cursor: pointer;
+    }
+    
+    .modalContent .tableHover:hover {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-	<script th:if="${session.admin == null}">
-		alert('인가된 권한이 없습니다. 관리자에게 문의하세요.');
-		history.back();
-	</script>
-  <div id="header-controller" style="width: 310px; float: left;">
-    <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
-  </div>
-	<div id="content">
-	  <div id="content_wrap">
-	    <div class="breadcrumb">
-				<a href="/main">
-					<img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
-				</a>
-	      &nbsp;
-	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
-	      &nbsp;
-				<a href="/stock">
-					<span style="color: #ababab; font-weight: bold;">재고 관리</span>
-				</a>
-	      &nbsp;
-	      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
-	      &nbsp;
-	      <span style="font-weight: bold;">재고 리스트</span>
-	    </div>
-	    <div class="menu-header">
-	    	<form method="get" action="/stock">
-		    	<button type="button" class="lime" onclick="location.href='/stock/add'">재고 등록</button>
-		    	<button type="button" class="green" onclick="location.href='/stock/addItem'">생산품 등록</button>
-		    	&nbsp;
-		    	&nbsp;
-		    	&nbsp;
-		    	&nbsp;
-		    	&nbsp;
-		    	<label>창고 선택</label>
-		    	&nbsp;
-		    	<select class="select" name="storageNo" onchange="this.form.submit()" id="storage_no">
-		    		<option value="">전체</option>
-		    		<option th:each="storage:${storages}" th:value="${storage.storageNo}"
-		    		th:text="${storage.storageName}" th:selected="${storage.storageNo == selectedStorage}" />
-		    	</select>
-		      &nbsp;
-		      &nbsp;
-		      &nbsp;
-		      &nbsp;
-		      &nbsp;
-		      <span>상품만 보기</span>
-		      <input name="isItem" type="checkbox" th:checked="${isItem}" onchange="this.form.submit()" id="is_item">
-		        <input type="text"placeholder="재고 번호, 재고명을 입력하세요." 
-		        class="search_input" name="search" th:value="${search}" id="search"> 
-		        <input type="submit" class="search_btn" value="조 회" >
-	      </form>
-	    </div>
-	    <div class="content-1">
-	      <table>
-	        <thead>
-	          <tr>
-	            <th>재고 번호</th>
-	            <th>재고명</th>
-	            <th>창고명</th>
-	            <th>수량</th>
-	          </tr>
-	        </thead>
-	        <tbody>
-	        	<tr th:each="stock:${stocks}">
-	        		<td th:text="${stock.stockNo}"></td>
-	        		<td th:data-value="${stock.stockNo}"  th:text="${stock.item.itemName}" onclick="openModal(this)" class="stock"></td>
-	        		<td th:text="${stock.storage.storageName}"></td>
-	        		<td th:text="${stock.quantity}"	></td>
-	        	</tr>
-	        </tbody>
-	      </table>
-	      <div id="pagination" class="pagination">
-		  		<button th:value="${1}"  onclick="changePage(this);" type="button"><<</button>
-		  		<button type="button" onclick="changePage(this);" th:disabled	="${stocks.first}" th:value ="${paging.currentPage - 1}" >이전</button>
-		  		<span th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+<script th:if="${session.admin == null}">
+  alert('인가된 권한이 없습니다. 관리자에게 문의하세요.');
+  history.back();
+</script>
+<div id="header-controller" style="width: 310px; float: left;">
+  <th:block th:replace="fragments/sidebar :: sidebarFragment"/>
+</div>
+<div id="content">
+  <div id="content_wrap">
+    <div class="breadcrumb">
+      <a href="/main">
+        <img src="/img/icon/icon-home-filled.png" alt="" style="display: inline; line-height: 40px;">
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <a href="/stock">
+        <span style="color: #ababab; font-weight: bold;">재고 관리</span>
+      </a>
+      &nbsp;
+      <span style="font-weight: bold; font-size: 1.2rem; color: #ababab; line-height: 40px;">&gt;</span>
+      &nbsp;
+      <span style="font-weight: bold;">재고 리스트</span>
+    </div>
+    <div class="menu-header">
+      <form method="get" action="/stock">
+        <button type="button" class="lime" onclick="location.href='/stock/add'">재고 등록</button>
+        <button type="button" class="green" onclick="location.href='/stock/addItem'">생산품 등록</button>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <label>창고 선택</label>
+        &nbsp;
+        <select class="select" name="storageNo" onchange="this.form.submit()" id="storage_no">
+          <option value="">전체</option>
+          <option th:each="storage:${storages}" th:value="${storage.storageNo}"
+                  th:text="${storage.storageName}" th:selected="${storage.storageNo == selectedStorage}" />
+        </select>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <span>상품만 보기</span>
+        <input name="isItem" type="checkbox" th:checked="${isItem}" onchange="this.form.submit()" id="is_item">
+        <input type="text"placeholder="재고 번호, 재고명을 입력하세요."
+               class="search_input" name="search" th:value="${search}" id="search">
+        <input type="submit" class="search_btn" value="조 회" >
+      </form>
+    </div>
+    <div class="content-1">
+      <table>
+        <thead>
+        <tr>
+          <th>재고 번호</th>
+          <th>재고명</th>
+          <th>창고명</th>
+          <th>수량</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="stock:${stocks}">
+          <td th:text="${stock.stockNo}"></td>
+          <td th:data-value="${stock.stockNo}"  th:text="${stock.item.itemName}" onclick="openModal(this)" class="stock"></td>
+          <td th:text="${stock.storage.storageName}"></td>
+          <td th:text="${stock.quantity}"	></td>
+        </tr>
+        </tbody>
+      </table>
+      <div id="pagination" class="pagination">
+        <button th:value="${1}"  onclick="changePage(this);" type="button"><<</button>
+        <button type="button" onclick="changePage(this);" th:disabled	="${stocks.first}" th:value ="${paging.currentPage - 1}" >이전</button>
+        <span th:each="page : ${#numbers.sequence(paging.startPage, paging.endPage)}">
 						<button type="button" th:value="${page}" th:text="${page}" th:disabled="${paging.currentPage eq page}"  th:classappend="${paging.currentPage eq page} ? 'bold disabled' : ''"onclick="changePage(this);"></button>
 					</span>
-		  		<button type="button" onclick="changePage(this);" th:disabled = "${stocks.last}" th:value="${paging.currentPage + 1}" >다음</button>
-		  		<button type="button" th:value="${stocks.totalPages}" th onclick="changePage(this)">>></button>
-		  	</div>
-	
-	    		<button th:if="${hasNext}" th:value="${currentPage+1}" onclick="changePage(this)" >다음</button>
-				</div>
-	    	<button type="button" class="green right" onclick="location.href='/item'">상품 목록</button>
-	    </div>
-	    <div class="modal" id="modal">
-	    	<button type="button" onclick="closeModal()" class="closeModal">
-	    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
-	    	</button>
-	    	<div class="modalContent">
-		    	<label>재고번호 : </label>
-		    	<input id="modal_stock_no" readonly="readonly" class="noFocus">
-	    	</div>
-	    	<div class="modalContent">
-		    	<label>재고명 : </label>
-		    	<input id="modal_itemName" readonly="readonly" class="noFocus" >
-	    	</div>
-	    	<div class="modalContent">
-		    	<label>창고 : </label>
-		    	<input id="modal_storage_no" readonly="readonly" class="noFocus" >
-	    	</div>
-	    	<div class="modalContent">
-		    	<label>사진 : </label>
-		    	<img alt="stock_image" src="" id="modal_itemImage">
-	    	</div>
-	    	<div class="modalContent">
-		    	<label>수량 : </label>
-		    	<input id="modal_quantity" readonly="readonly" class="noFocus" >
-	    	</div>
-	    	<button class="lime modalButtonLeft" type="button" onclick="openModalMove()">재고 이동</button>
-	    	<button class="lime modalButtonRight" type="button" onclick="openModalEdit()">재고 수정</button>
-	    </div>
-	    
-	    <div class="modal" id="modalEdit">
-	    	<form action="/stock/edit" method="post">
-		    	<button type="button" onclick="closeModal()" class="closeModal">
-		    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
-		    	</button>
-		    	<div class="modalContent">
-			    	<label>재고번호 : </label>
-			    	<input id="modalEdit_stock_no" readonly="readonly" class="noFocus" name="editStockNo">
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>재고명 : </label>
-			    	<input id="modalEdit_itemName" readonly="readonly" class="noFocus" >
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>창고 : </label>
-			    	<input id="modalEdit_storage_no" readonly="readonly" class="noFocus" >
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>사진 : </label>
-			    	<img alt="stock_image" src="" id="modalEdit_itemImage">
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>수량 : </label>
-			    	<input id="modalEdit_quantity" class="input" name="editQuantity" type="number" min="0" >
-		    	</div>
-		    	<button class="lime modalButtonRight" type="submit">재고 수정</button>	
-	    	</form>
-	    </div>
-	    
-	    <div class="modal" id="modalMove">
-	    	<form action="/stock/move" method="post">
-		    	<button type="button" onclick="closeModal()" class="closeModal">
-		    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
-		    	</button>
-		    	<div class="modalContent">
-			    	<label>재고번호 : </label>
-			    	<input id="modalMove_stock_no" readonly="readonly" class="noFocus" name="moveStockNo">
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>재고명 : </label>
-			    	<input id="modalMove_itemName" readonly="readonly" class="noFocus" >
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>옮길 창고 : </label>
-			    	<input id="modalMove_storage_no" readonly="readonly" class="input" required="required" onclick="openStorageModal()">
-			    	<input hidden="" id="storageHidden" name="storageNo">
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>사진 : </label>
-			    	<img alt="stock_image" src="" id="modalMove_itemImage">
-		    	</div>
-		    	<div class="modalContent">
-			    	<label>옮길 수량 : </label>
-			    	<input id="modalMove_quantity" class="input" name="moveQuantity" type="number" min="0" >
-		    	</div>
-		    	<button class="lime modalButtonRight" type="submit">재고 수정</button>	
-	    	</form>
-	    </div>
-	    
-	    <div class="modalBackground" id="modalBackground">
-	    </div>
-	    <div class="modalSmall" id="storageModal">
-		  	<button type="button" onclick="closeStorageModal()" class="closeModal">
-	    		<img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
-	    	</button>
-	    	<div class="modalContent" id="storageModalContent">
-	    	</div>
-	  	</div>
-	  </div>
-	<script type="text/javascript">
-	
-	let modal = document.getElementById('modal');
-	let modalBackground = document.getElementById('modalBackground');
-	let modalEdit = document.getElementById('modalEdit');
-	let modalMove = document.getElementById('modalMove');
-	
-	function changePage(element) {
-		let search = document.getElementById('search').value || '';
-		let storage_no = document.getElementById('storage_no').value || '';
-		let is_item = document.getElementById('is_item').checked ? 'true' : 'false';
-		let page = element.value
-	
-		window.location.href =
-        `?page=${page}&search=${encodeURIComponent(search)}&storage_no=${storage_no}&is_item=${is_item}`
-	}
-	
-	function openModal(element) {
-		let stock_no = element.getAttribute('data-value');
-		
-		fetch(`/stock/${stock_no}`)
-			.then(response => response.json())
-			.then(data => {
-				document.getElementById('modal_stock_no').value = data.stockNo;
-				document.getElementById('modal_itemName').value = data.item.itemName;
-				document.getElementById('modal_storage_no').value = data.storage.storageName;
-				document.getElementById('modal_itemImage').src = data.item.itemImage;
-				document.getElementById('modal_quantity').value = data.quantity;
-			})
-		
-		modal.style.display = 'block';
-		modalBackground.style.display = 'block';
-		modalEdit.style.display = 'none';
-		modalMove.style.display = 'none';
-	}
-	
-	function openModalEdit() {
-		document.getElementById('modalEdit_stock_no').value = document.getElementById('modal_stock_no').value;
-		document.getElementById('modalEdit_itemName').value = document.getElementById('modal_itemName').value;
-		document.getElementById('modalEdit_storage_no').value = document.getElementById('modal_storage_no').value;
-		document.getElementById('modalEdit_itemImage').src = document.getElementById('modal_itemImage').src;
-		document.getElementById('modalEdit_quantity').value = document.getElementById('modal_quantity').value;
-		modal.style.display = 'none';
-		modalBackground.style.display = 'block';
-		modalEdit.style.display = 'block';
-		modalMove.style.display = 'none';
-		document.getElementById('modalEdit_quantity').focus();
-	}
-	
-	function openModalMove() {
-		document.getElementById('modalMove_stock_no').value = document.getElementById('modal_stock_no').value;
-		document.getElementById('modalMove_itemName').value = document.getElementById('modal_itemName').value;
-		document.getElementById('modalMove_itemImage').src = document.getElementById('modal_itemImage').src;
-		document.getElementById('modalMove_quantity').setAttribute('max',document.getElementById('modal_quantity').value) ;
-		console.log(document.getElementById('modal_quantity').value);
-		modal.style.display = 'none';
-		modalBackground.style.display = 'block';
-		modalEdit.style.display = 'none';
-		modalMove.style.display = 'block';
-	}
-	
-	function closeModal() {
-		modal.style.display = 'none';
-		modalBackground.style.display = 'none';
-		modalEdit.style.display = 'none';
-		modalMove.style.display = 'none';
-	}
-	
-	function openStorageModal() {
-		storageModal.style.display = 'block';
-		loadStorage('', 1);
-		document.activeElement.blur()
-	}
-	
-	function closeStorageModal() {
-		storageModal.style.display = 'none';
-	}
-	
-	function loadStorage(search, page) {
-		
-		fetch(`/stock/add/storage?search=${search}&page=${page}`)
-			.then(response => response.text())
-			.then(html => {
-				document.getElementById('storageModalContent').innerHTML = html;	
-		})
-			.catch(error => {
-				console.error('Error', error);
-			})
-		
-		itemModal.style.display = 'none';
-		modalBackground.style.display = 'block';
-		storageModal.style.display = 'block';
-	}
-	
-	function storageSubmit(event) {
-		
-		event.preventDefault();
-		
-		let storageModalSearch = document.getElementById('storageModalSearch').value;
-		let page= 1;
-		
-		loadStorage(storageModalSearch,page);
-	}
-	
-	function chooseStorage(element) {
-		let storageName = element.textContent;
-		let storageNo = element.getAttribute('data-value');
-		
-		document.getElementById('modalMove_storage_no').value = storageName;
-		document.getElementById('storageHidden').value = storageNo;
-		closeStorageModal();
-	}
-	
-	function changeStoragePage(element) {
-		let search= document.getElementById('storageModalSearch').value;
-		let page = element.getAttribute('data-value');
-		
-		loadStorage(search,page);
-	}
-	</script>
+        <button type="button" onclick="changePage(this);" th:disabled = "${stocks.last}" th:value="${paging.currentPage + 1}" >다음</button>
+        <button type="button" th:value="${stocks.totalPages}" th onclick="changePage(this)">>></button>
+      </div>
+      
+      <button th:if="${hasNext}" th:value="${currentPage+1}" onclick="changePage(this)" >다음</button>
+    </div>
+    <button type="button" class="green right" onclick="location.href='/item'">상품 목록</button>
+  </div>
+  <div class="modal" id="modal">
+    <button type="button" onclick="closeModal()" class="closeModal">
+      <img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+    </button>
+    <div class="modalContent">
+      <label>재고번호 : </label>
+      <input id="modal_stock_no" readonly="readonly" class="noFocus">
+    </div>
+    <div class="modalContent">
+      <label>재고명 : </label>
+      <input id="modal_itemName" readonly="readonly" class="noFocus" >
+    </div>
+    <div class="modalContent">
+      <label>창고 : </label>
+      <input id="modal_storage_no" readonly="readonly" class="noFocus" >
+    </div>
+    <div class="modalContent">
+      <label>사진 : </label>
+      <img alt="stock_image" src="" id="modal_itemImage">
+    </div>
+    <div class="modalContent">
+      <label>수량 : </label>
+      <input id="modal_quantity" readonly="readonly" class="noFocus" >
+    </div>
+    <button class="lime modalButtonLeft" type="button" onclick="openModalMove()">재고 이동</button>
+    <button class="lime modalButtonRight" type="button" onclick="openModalEdit()">재고 수정</button>
+  </div>
+  
+  <div class="modal" id="modalEdit">
+    <form action="/stock/edit" method="post">
+      <button type="button" onclick="closeModal()" class="closeModal">
+        <img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+      </button>
+      <div class="modalContent">
+        <label>재고번호 : </label>
+        <input id="modalEdit_stock_no" readonly="readonly" class="noFocus" name="editStockNo">
+      </div>
+      <div class="modalContent">
+        <label>재고명 : </label>
+        <input id="modalEdit_itemName" readonly="readonly" class="noFocus" >
+      </div>
+      <div class="modalContent">
+        <label>창고 : </label>
+        <input id="modalEdit_storage_no" readonly="readonly" class="noFocus" >
+      </div>
+      <div class="modalContent">
+        <label>사진 : </label>
+        <img alt="stock_image" src="" id="modalEdit_itemImage">
+      </div>
+      <div class="modalContent">
+        <label>수량 : </label>
+        <input id="modalEdit_quantity" class="input" name="editQuantity" type="number" min="0" >
+      </div>
+      <button class="lime modalButtonRight" type="submit">재고 수정</button>
+    </form>
+  </div>
+  
+  <div class="modal" id="modalMove">
+    <form action="/stock/move" method="post">
+      <button type="button" onclick="closeModal()" class="closeModal">
+        <img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+      </button>
+      <div class="modalContent">
+        <label>재고번호 : </label>
+        <input id="modalMove_stock_no" readonly="readonly" class="noFocus" name="moveStockNo">
+      </div>
+      <div class="modalContent">
+        <label>재고명 : </label>
+        <input id="modalMove_itemName" readonly="readonly" class="noFocus" >
+      </div>
+      <div class="modalContent">
+        <label>옮길 창고 : </label>
+        <input id="modalMove_storage_no" readonly="readonly" class="input" required="required" onclick="openStorageModal()">
+        <input hidden="" id="storageHidden" name="storageNo">
+      </div>
+      <div class="modalContent">
+        <label>사진 : </label>
+        <img alt="stock_image" src="" id="modalMove_itemImage">
+      </div>
+      <div class="modalContent">
+        <label>옮길 수량 : </label>
+        <input id="modalMove_quantity" class="input" name="moveQuantity" type="number" min="0" >
+      </div>
+      <button class="lime modalButtonRight" type="submit">재고 수정</button>
+    </form>
+  </div>
+  
+  <div class="modalBackground" id="modalBackground">
+  </div>
+  <div class="modalSmall" id="storageModal">
+    <button type="button" onclick="closeStorageModal()" class="closeModal">
+      <img class="closeButton" alt="closeButton" src="/img/icon/closebutton.png">
+    </button>
+    <div class="modalContent" id="storageModalContent">
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  
+  let modal = document.getElementById('modal');
+  let modalBackground = document.getElementById('modalBackground');
+  let modalEdit = document.getElementById('modalEdit');
+  let modalMove = document.getElementById('modalMove');
+  
+  function changePage(element) {
+    let search = document.getElementById('search').value || '';
+    let storage_no = document.getElementById('storage_no').value || '';
+    let is_item = document.getElementById('is_item').checked ? 'true' : 'false';
+    let page = element.value
+    
+    window.location.href =
+        `?page=${page}&search=${encodeURIComponent(search)}&storage_no=${storage_no}&isItem=${is_item}`
+  }
+  
+  function openModal(element) {
+    let stock_no = element.getAttribute('data-value');
+    
+    fetch(`/stock/${stock_no}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('modal_stock_no').value = data.stockNo;
+          document.getElementById('modal_itemName').value = data.item.itemName;
+          document.getElementById('modal_storage_no').value = data.storage.storageName;
+          document.getElementById('modal_itemImage').src = data.item.itemImage;
+          document.getElementById('modal_quantity').value = data.quantity;
+        })
+    
+    modal.style.display = 'block';
+    modalBackground.style.display = 'block';
+    modalEdit.style.display = 'none';
+    modalMove.style.display = 'none';
+  }
+  
+  function openModalEdit() {
+    document.getElementById('modalEdit_stock_no').value = document.getElementById('modal_stock_no').value;
+    document.getElementById('modalEdit_itemName').value = document.getElementById('modal_itemName').value;
+    document.getElementById('modalEdit_storage_no').value = document.getElementById('modal_storage_no').value;
+    document.getElementById('modalEdit_itemImage').src = document.getElementById('modal_itemImage').src;
+    document.getElementById('modalEdit_quantity').value = document.getElementById('modal_quantity').value;
+    modal.style.display = 'none';
+    modalBackground.style.display = 'block';
+    modalEdit.style.display = 'block';
+    modalMove.style.display = 'none';
+    document.getElementById('modalEdit_quantity').focus();
+  }
+  
+  function openModalMove() {
+    document.getElementById('modalMove_stock_no').value = document.getElementById('modal_stock_no').value;
+    document.getElementById('modalMove_itemName').value = document.getElementById('modal_itemName').value;
+    document.getElementById('modalMove_itemImage').src = document.getElementById('modal_itemImage').src;
+    document.getElementById('modalMove_quantity').setAttribute('max',document.getElementById('modal_quantity').value) ;
+    console.log(document.getElementById('modal_quantity').value);
+    modal.style.display = 'none';
+    modalBackground.style.display = 'block';
+    modalEdit.style.display = 'none';
+    modalMove.style.display = 'block';
+  }
+  
+  function closeModal() {
+    modal.style.display = 'none';
+    modalBackground.style.display = 'none';
+    modalEdit.style.display = 'none';
+    modalMove.style.display = 'none';
+  }
+  
+  function openStorageModal() {
+    storageModal.style.display = 'block';
+    loadStorage('', 1);
+    document.activeElement.blur()
+  }
+  
+  function closeStorageModal() {
+    storageModal.style.display = 'none';
+  }
+  
+  function loadStorage(search, page) {
+    
+    fetch(`/stock/add/storage?search=${search}&page=${page}`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('storageModalContent').innerHTML = html;
+        })
+        .catch(error => {
+          console.error('Error', error);
+        })
+    
+    itemModal.style.display = 'none';
+    modalBackground.style.display = 'block';
+    storageModal.style.display = 'block';
+  }
+  
+  function storageSubmit(event) {
+    
+    event.preventDefault();
+    
+    let storageModalSearch = document.getElementById('storageModalSearch').value;
+    let page= 1;
+    
+    loadStorage(storageModalSearch,page);
+  }
+  
+  function chooseStorage(element) {
+    let storageName = element.textContent;
+    let storageNo = element.getAttribute('data-value');
+    
+    document.getElementById('modalMove_storage_no').value = storageName;
+    document.getElementById('storageHidden').value = storageNo;
+    closeStorageModal();
+  }
+  
+  function changeStoragePage(element) {
+    let search= document.getElementById('storageModalSearch').value;
+    let page = element.getAttribute('data-value');
+    
+    loadStorage(search,page);
+  }
+</script>
 </body>
 </html>
