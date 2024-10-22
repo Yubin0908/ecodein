@@ -1,7 +1,5 @@
 package com.project.ecodein.service;
 
-
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.ssl.DefaultSslBundleRegistry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,13 +40,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 @Service
 public class OrderingService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
 	private final OrderingRepository ORDERING_REPOSITORY;
     private final StockRepository STOCK_REPOSITORY;
@@ -89,7 +82,6 @@ public class OrderingService {
 
     // To: ReturnController
     public List<Ordering> getOrderings(int buyer_code) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "orderNo");
         return ORDERING_REPOSITORY.findAllByBuyerCode(buyer_code);
     }
 
@@ -103,7 +95,7 @@ public class OrderingService {
             buyerCode = user.getBuyerCode().getBuyerCode();
         }
 
-        Sort sort = null;
+        Sort sort;
 
         if (buyerCode != null) {
             sort = Sort.by(Sort.Order.desc("orderNo"));
@@ -122,6 +114,7 @@ public class OrderingService {
             log.error("(전체검색)검색어 없고, 상태 체크 안한 경우");
             Page<Ordering> ordering = SESSION.getAttribute("admin") != null ? ORDERING_REPOSITORY.findAll(pageable) :
                 ORDERING_REPOSITORY.findAllByBuyerCode_BuyerCode(buyerCode, pageable);
+
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
             // (키워드 검색) 검색어가 있는 경우
         } else if (query != null) {
@@ -163,11 +156,7 @@ public class OrderingService {
     @Transactional
     public void addOrder(OrderPoolDTO orderPool) {
 
-        Approval prevApproval = APPROVAL_REPOSITORY.findTopByOrderByApprovalNoDesc();
-        Ordering prevOrder = ORDERING_REPOSITORY.findTopByOrderByOrderNoDesc();
-
         User user = (User)SESSION.getAttribute("user");
-
 
         Approval approval = new Approval();
         Buyer buyer = user.getBuyerCode();
@@ -179,7 +168,7 @@ public class OrderingService {
         approval.setSubject(null);
 
         approval = APPROVAL_REPOSITORY.save(approval);
-        autoSaveApprovalStatusble(approval);
+        autoSaveApprovalStatusble(approval, admin);
 
         Ordering ordering = new Ordering();
         ordering.setOrderNo(approval.getApprovalNo());
@@ -191,7 +180,6 @@ public class OrderingService {
 
         ordering = ORDERING_REPOSITORY.save(ordering);
 
-
         for (int idx = 0; idx < orderPool.getOrder_nos().size(); idx++) {
             Item item = new Item();
             item.setItemNo(orderPool.getOrder_nos().get(idx));
@@ -201,9 +189,7 @@ public class OrderingService {
             orderDetail.setQuantity(orderPool.getQuantities().get(idx));
             ORDER_DETAIL_REPOSITORY.save(orderDetail);
         }
-
     }
-    
     
     // 발주 수정
     @Modifying
@@ -237,7 +223,7 @@ public class OrderingService {
 
 
         List<Stock> stockList = new ArrayList<Stock>();
-        Stock stock = null;
+        Stock stock;
 
         for (Item item : items) {
             if (!item.getIsMaterial()) {
@@ -247,12 +233,12 @@ public class OrderingService {
             }
         }
 
-        for (int i = 0; i < stocks.size(); i++) {
-            for (int j = 0; j < stockList.size(); j++) {
-                if (stockList.get(j).getItem().getItemNo() == stocks.get(i).getItem().getItemNo()) {
-                    stockList.get(j).setQuantity(stockList.get(j).getQuantity() + stocks.get(i).getQuantity());
-                    stockList.get(j).setStockNo(stocks.get(i).getStockNo());
-                    stockList.get(j).setStorage(stocks.get(i).getStorage());
+        for (Stock value : stocks) {
+            for (Stock item : stockList) {
+                if (item.getItem().getItemNo() == value.getItem().getItemNo()) {
+                    item.setQuantity(item.getQuantity() + value.getQuantity());
+                    item.setStockNo(value.getStockNo());
+                    item.setStorage(value.getStorage());
                     break;
                 }
             }
@@ -303,9 +289,8 @@ public class OrderingService {
 
     // 전자결재 상태
     @Transactional
-    protected void autoSaveApprovalStatusble (Approval approval) {
-        Admin admin = new Admin();
-        admin.setAdminId("auto");
+    protected void autoSaveApprovalStatusble (Approval approval, Admin admin) {
+        admin.setAdminId(admin.getAdminId());
 
         ApprovalStatusLableDTO approvalStatusLableDTO = new ApprovalStatusLableDTO();
         approvalStatusLableDTO.setAdmin(admin);

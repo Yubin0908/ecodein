@@ -6,7 +6,6 @@ import com.project.ecodein.dto.*;
 import com.project.ecodein.entity.OrderDetail;
 import com.project.ecodein.entity.Ordering;
 import com.project.ecodein.service.ApprovalService;
-import com.project.ecodein.service.ItemService;
 import com.project.ecodein.service.OrderingService;
 
 import java.util.List;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.project.ecodein.dto.OrderPoolDTO;
-import com.project.ecodein.entity.Stock;
 
 
 @Controller
@@ -34,12 +32,10 @@ public class OrderController {
 
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
     private final OrderingService ORDERING_SERVICE;
-    private final ItemService ITEM_SERVICE;
     private final ApprovalService APPROVAL_SERVICE;
 
-    public OrderController(OrderingService ORDERING_SERVICE, ItemService ITEM_SERVICE, ApprovalService approvalService) {
+    public OrderController(OrderingService ORDERING_SERVICE, ApprovalService approvalService) {
         this.ORDERING_SERVICE = ORDERING_SERVICE;
-        this.ITEM_SERVICE = ITEM_SERVICE;
         this.APPROVAL_SERVICE = approvalService;
     }
 
@@ -62,24 +58,9 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // 페이지네이션
-//	@GetMapping("/list")
-//	public String orderList(
-//			@RequestParam(name = "page", defaultValue = "1") int page,
-//			@RequestParam(name = "query", required = false) String query,
-//			Model model) {
-//		// 페이지네이션 및 검색 결과 조회
-//		Page<Ordering> orders = ORDER_SERVICE.getOrders(page, query);
-//		model.addAttribute("orders", orders.getContent());
-//		model.addAttribute("totalPages", orders.getTotalPages());
-//		model.addAttribute("currentPage", page);
-//		model.addAttribute("query", query);
-//		return "order/order";
-//	}
-
     // 발주 등록 페이지
     @GetMapping("/add")
-    public String orderAdd(Model model) {
+    public String orderAdd() {
 
         return "order/orderAdd";
     }
@@ -87,7 +68,7 @@ public class OrderController {
     // 발주 등록 페이지_상품 검색 기능
     @GetMapping("/search")
     @ResponseBody
-    public List<StockDTO> searchProducts(@RequestParam(name = "query", required = false) String query, Model model) {
+    public List<StockDTO> searchProducts(@RequestParam(name = "query", required = false) String query) {
         log.info(query);
         // 검색 로직 수행 (Stock 검색)
         List<StockDTO> stock = ORDERING_SERVICE.searchStocksByName(query);
@@ -104,13 +85,6 @@ public class OrderController {
         ORDERING_SERVICE.addOrder(orderPoolDTO);
         return "redirect:/order/1/all";
     }
-
-    // 발주검색_전체상품
-//    @GetMapping("add")
-//    public String stocks(@PathVariable Stock stock) {
-//
-//        return "redirect:/order/all";
-//    }
 
     // 발주 상세 페이지
     @GetMapping("/detail/{order_no}")
@@ -149,7 +123,6 @@ public class OrderController {
     @GetMapping("/delivery/{orderNo}")
     public String orderDelivery (@PathVariable int orderNo, Model model) {
         ApprovalStatusLableDTO approvalStatusLableDTO = APPROVAL_SERVICE.getApprovalStatus(orderNo);
-        log.info("approvalStatusLable - {}", approvalStatusLableDTO);
         if (approvalStatusLableDTO != null && approvalStatusLableDTO.getStatus() == 3) {
             ORDERING_SERVICE.updateIsDelivery(orderNo);
             return "redirect:/order/detail/"+orderNo;
