@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter @Setter @ToString(exclude = "approval")
+@Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ordering")

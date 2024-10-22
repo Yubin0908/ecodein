@@ -68,7 +68,7 @@ public class OrderingService {
                            ApprovalStatusLableRepository approvalStatusLableRepository,
                            ModelMapper modelMapper, HttpSession session,
                            AdminRepository adminRepository,
-                           ItemRepository itemRepository, DefaultSslBundleRegistry sslBundleRegistry) {
+                           ItemRepository itemRepository) {
         this.MODEL_MAPPER = modelMapper;
         this.ORDERING_REPOSITORY = orderingRepository;
         this.STOCK_REPOSITORY = stockRepository;
@@ -97,21 +97,54 @@ public class OrderingService {
 	public Page<OrderingDTO> getOrders(@Param("page") int page, @Param("query") String query,
                                        @Param("status") String status) {
 
-        Sort sort = Sort.by(Sort.Order.desc(query == null && status.equals("all") ? "orderNo" : "order_no"));
+        User user = (User) SESSION.getAttribute("user");
+        Long buyerCode = null;
+        if (user != null) {
+            buyerCode = user.getBuyerCode().getBuyerCode();
+        }
+
+        Sort sort = null;
+
+        if (buyerCode != null) {
+            sort = Sort.by(Sort.Order.desc("orderNo"));
+        } else if (query == null && SESSION.getAttribute("admin") != null && status.equals("all")) {
+            sort = Sort.by(Sort.Direction.DESC, "orderNo");
+        } else if (query != null && !status.equals("all")) {
+            sort = Sort.by(Sort.Direction.DESC, "order_no");
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, "order_no");
+        }
+
         Pageable pageable = PageRequest.of(page - 1, 10, sort);
+
         // (전체검색)검색어 없고, 상태 체크 안한 경우
         if (query == null && status.equals("all")) {
-            Page<Ordering> ordering = ORDERING_REPOSITORY.findAll(pageable);
+            log.error("(전체검색)검색어 없고, 상태 체크 안한 경우");
+            Page<Ordering> ordering = SESSION.getAttribute("admin") != null ? ORDERING_REPOSITORY.findAll(pageable) :
+                ORDERING_REPOSITORY.findAllByBuyerCode_BuyerCode(buyerCode, pageable);
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
             // (키워드 검색) 검색어가 있는 경우
         } else if (query != null) {
-            Page<Ordering> ordering =
+            int orderNo = 0;
+            try {
+                orderNo = Integer.parseInt(query);
+            } catch (NumberFormatException e) {
                 ORDERING_REPOSITORY.searchByQuery(query, pageable);
+            }
+            log.error("(키워드 검색) 검색어가 있는 경우");
+            Page<Ordering> ordering = SESSION.getAttribute("admin") != null ? ORDERING_REPOSITORY.searchByQuery(query
+                , pageable) :
+                ORDERING_REPOSITORY.findAllByBuyerCode_BuyerCodeAndOrderNoOrBuyerCode_BuyerName(buyerCode, orderNo,
+                                                                                                query, pageable);
+
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
             // (상태 검색) 상태코드가 있는 경우
         } else {
+            log.error("(상태 검색) 상태코드가 있는 경우");
             byte statusble = (byte) (status.equals("accept") ? 0 : status.equals("validation") ? 1 : status.equals("progress") ? 2 : 3);
-            Page<Ordering> ordering = ORDERING_REPOSITORY.findAllByIsDelivery(statusble, pageable);
+            Page<Ordering> ordering = SESSION.getAttribute("admin") != null ?
+                ORDERING_REPOSITORY.findAllByIsDelivery(statusble, pageable) :
+                ORDERING_REPOSITORY.findAllByBuyerCode_BuyerCodeAndIsDelivery(buyerCode, statusble, pageable);
             return ordering.map(ordering1 -> MODEL_MAPPER.map(ordering1, OrderingDTO.class));
         }
 	}
@@ -241,10 +274,6 @@ public class OrderingService {
         }
     }
 
-    // 발주상세(마지막 삭제)
-//    public void findById(int orderNo) {
-//    }
-
     // 발주 정보 조회
     public Ordering findById(int id) {
         return ORDERING_REPOSITORY.findById(id).orElse(null);
@@ -260,13 +289,6 @@ public class OrderingService {
         ORDERING_REPOSITORY.updateIsDeliveryByOrderNo(orderNo);
         updateStock(orderNo);
     }
-
-
-    // 상품검색_모든 상품
-//    private void stocks () {
-//        STOCK_REPOSITORY.findAll();
-//    }
-
 
     // 발주 상세 페이지 수정
     private void updateStock (int orderNo) {

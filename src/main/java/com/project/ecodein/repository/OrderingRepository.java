@@ -1,5 +1,7 @@
 package com.project.ecodein.repository;
 
+import com.project.ecodein.entity.Buyer;
+import org.hibernate.query.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +16,12 @@ import java.util.List;
 
 @Repository
 public interface OrderingRepository extends JpaRepository<Ordering, Integer> {
+
+    Page<Ordering> findAllByBuyerCode_BuyerCode(Long buyerCode, Pageable pageable);
+    Page<Ordering> findAllByBuyerCode_BuyerCodeAndOrderNoOrBuyerCode_BuyerName(Long buyerCode, int orderNo,
+                                                                               String buyerName,
+                                                                               Pageable pageable);
+    Page<Ordering> findAllByBuyerCode_BuyerCodeAndIsDelivery (Long buyerCode, byte isDelivery, Pageable pageable);
 
     // 검색 쿼리
     @Query(value = "select o.*, b.buyer_name from ordering o " +
@@ -51,4 +59,5 @@ public interface OrderingRepository extends JpaRepository<Ordering, Integer> {
     List<Ordering> findAllByBuyerCode (@Param("buyer_code") int buyer_code);
 
     Ordering findTopByOrderByOrderNoDesc();
+
 }
