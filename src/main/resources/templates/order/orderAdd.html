@@ -472,13 +472,13 @@
         body: formData
       })
 
-          // .then(res => {
-          //   if (res.ok) {
-          //     location.href = '/order/1/all'
-          //   }
-          // });
+          .then(res => {
+            if (res.ok) {
+              location.href = '/order/1/all'
+            }
+          });
 
-          .then(data => location.href = `${data.url}`)
+          // .then(data => location.href = '/order/1/all')
     }
 
   }
