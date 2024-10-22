@@ -119,7 +119,7 @@
     }
     
     function approval_destroy(orderNo) {
-      let select = confirm('정말 결재처리하시겠습니까?');
+      let select = confirm('정말 반려처리하시겠습니까?');
       if (select) {
         location.href = '/approval/status-update/' + orderNo + '/0';
         location.reload();
