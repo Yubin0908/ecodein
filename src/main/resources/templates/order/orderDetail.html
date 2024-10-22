@@ -189,7 +189,7 @@
       <form action="/order/1/all" method="get">
         <div class="flex mb-4">
           <input class="border border-gray-300 p-2 w-full rounded-input"
-                 name="query" placeholder="발주번호, 거래처를 입력하세요."
+                 name="query" th:placeholder="${session.admin != null ? '발주번호, 거래처명을 입력하세요.' : '발주번호를 입력하세요.'}"
                  type="text">
           <button class="bg-green-81CD28 text-white px-4 ml-2 rounded-button search-button"
                   type="submit">조 회
@@ -445,7 +445,7 @@
                       stroke-linecap="round" stroke-linejoin="round"
                       stroke-width="2"/>
               </svg>
-              <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">상품등록 출고를 하시겠습니까?</h3>
+              <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">상품출고 등록을 하시겠습니까?</h3>
               <button class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                       data-modal-hide="popup-modal-c"
                       type="button">

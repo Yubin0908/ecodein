@@ -177,7 +177,7 @@
       <form action="/order/1/all" method="get">
         <div class="flex mb-4">
           <input class="border border-gray-300 p-2 w-4/5 rounded-input"
-                 name="query" placeholder="발주번호, 거래처를 입력하세요."
+                 name="query"  th:placeholder="${session.admin != null ? '발주번호, 거래처명을 입력하세요.' : '발주번호를 입력하세요.'}"
                  type="text">
           <button class="bg-green-81CD28 py-2 text-white px-4 ml-3 rounded-button search-button"
                   type="submit">조 회
@@ -299,7 +299,7 @@
                     class="bg-white w-full pr-11 h-10 pl-3 py-2 bg-transparent placeholder:text-slate-400
                       text-slate-700 text-sm border border-slate-200 rounded transition duration-300 ease
                       focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="상품코드/상품명 검색..."
+                    placeholder="상품명 검색..."
                     id="searchInput"
                 />
                 <button
