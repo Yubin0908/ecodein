@@ -16,7 +16,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 10
+      maximum-pool-size: 20
       minimum-idle: 5
       idle-timeout: 600000
       max-lifetime: 1800000
@@ -48,6 +48,8 @@ logging:
     file: UTF-8
   level:
     root: info
+    org:
+      hibernate: debug
   file:
     name: eco_de_in_logger.log
     max-history: 3
