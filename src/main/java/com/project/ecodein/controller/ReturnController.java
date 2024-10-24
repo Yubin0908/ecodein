@@ -69,7 +69,6 @@ public class ReturnController {
         User user = (User) httpSession.getAttribute("user");
         LocalDateTime now = LocalDateTime.now();
 
-        ReturnDTO returnDTO = RETURN_SERVICE.findById(returnId);
 
         if (type.equals("regist")) {
             log.info("type: {} now: {}", type, now);
@@ -80,6 +79,7 @@ public class ReturnController {
                 model.addAttribute("buyerName", user.getBuyerCode().getBuyerName());
             }
         } else if (type.equals("detail")) {
+            ReturnDTO returnDTO = RETURN_SERVICE.findById(returnId);
             model.addAttribute("tab", "반품 상세 정보 - ");
             model.addAttribute("serviceName",returnDTO);
             model.addAttribute("items", RETURN_ITEM_SERVICE.findByReturnId(returnId));

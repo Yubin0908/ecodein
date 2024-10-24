@@ -382,7 +382,7 @@
     function modal_extend(type, returnId) {
       let safeType = encodeURIComponent(type);
       let payload = { returnId: returnId };
-      
+
       fetch(`/return/modal/${safeType}`, {
         method: 'POST',
         headers: {
@@ -395,7 +395,7 @@
           })
           .then(html => {
             document.getElementById('modal-pos').innerHTML = html;
-            
+
             $('.modal').removeClass('hidden');
             setupModalEventHandlers();
           })
