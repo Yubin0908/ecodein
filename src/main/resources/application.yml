@@ -39,7 +39,7 @@ logging:
     console: utf-8
     file: UTF-8
   level:
-    root: error
+    root: info
   file:
     name: eco_de_in_logger.log
     max-history: 3
