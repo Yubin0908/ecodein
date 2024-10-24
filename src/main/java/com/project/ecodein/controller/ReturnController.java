@@ -88,6 +88,7 @@ public class ReturnController {
         }
 
         return "functional/return-modal";
+
     }
 
     @GetMapping("/accept/{returnId}/{returnData}")
