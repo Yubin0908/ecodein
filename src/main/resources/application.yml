@@ -42,6 +42,7 @@ logging:
     root: error
   file:
     name: eco_de_in_logger.log
+    max-history: 3
 
 cloud:
   aws:
